@@ -574,10 +574,9 @@ function setupEventListeners() {
         await chrome.storage.local.set({ toonSeconden: toonSeconden });
     });
     toggleBatterijKnop.addEventListener('click', async () => {
-        let { toonBatterij: isVisible } = await chrome.storage.local.get('toonBatterij');
-        const nieuweZichtbaarheid = isVisible === undefined ? !standaardInstellingen.toonBatterij : !isVisible;
-        applyBatteryVisibility(nieuweZichtbaarheid);
-        await chrome.storage.local.set({ toonBatterij: nieuweZichtbaarheid });
+        toonBatterij = !toonBatterij;
+        applyBatteryVisibility(toonBatterij);
+        await chrome.storage.local.set({ toonBatterij: toonBatterij });
     });
     toggleDatumKnop.addEventListener('click', async () => {
         let { isDatumVisible } = await chrome.storage.local.get('isDatumVisible');
