@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "__MSG_extName__",
+  "version": "1.5.1",
+  "description": "__MSG_extDescription__",
+  "default_locale": "en",
+  "icons": {
+    "16": "clock_icon16x16.png",
+    "48": "clock_icon48x48.png",
+    "128": "clock_icon128x128.png"
+  },
+  "permissions": [
+    "windows",
+    "storage",
+    "system.display",
+    "alarms",
+    "offscreen"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "__MSG_tooltipOpenClock__",
+    "default_icon": {
+        "16": "clock_icon16x16.png",
+        "48": "clock_icon48x48.png"
+    }
+  }
+}

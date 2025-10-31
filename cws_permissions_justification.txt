@@ -1,0 +1,16 @@
+Here is the justification for the permissions required by the "Very Practical Clock" extension:
+
+**1. `windows`**
+   - **Justification:** This permission is used to manage the clock's window. It allows the extension to create the pop-up window, close it when the toolbar icon is clicked again, and bring it to the front when an alarm goes off. It is also used to enter and exit fullscreen mode for the screensaver feature.
+
+**2. `storage`**
+   - **Justification:** This permission is essential for saving all user preferences and settings. It allows the extension to store customizations such as colors, fonts, sizes, clock position, and alarm settings locally on the user's machine, so their personalized clock setup is preserved across browser sessions.
+
+**3. `system.display`**
+   - **Justification:** This permission is used to get information about the user's screen dimensions. This information is necessary to correctly position the clock window when it is first opened, ensuring it appears in a predictable location on the screen.
+
+**4. `alarms`**
+   - **Justification:** This permission is a core requirement for the new alarm clock feature. It allows the extension to use the `chrome.alarms` API to schedule alarms that will trigger at the user-specified time. This is a very efficient method as it does not require a persistent background process, saving system resources while ensuring alarms go off reliably.
+
+**5. `offscreen`**
+   - **Justification:** This permission is required to play the alarm sounds reliably. Modern browsers have security policies that prevent background scripts from playing audio directly. The `offscreen` permission allows the extension to create a minimal, hidden document for the sole purpose of playing the alarm audio, which is the modern, approved method for this functionality.

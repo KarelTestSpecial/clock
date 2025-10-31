@@ -1,0 +1,35 @@
+
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #000;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+#notepad-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+#notepad-area {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #555;
+    background-color: #282828;
+    color: #eee;
+    resize: both; /* Resizing can be re-enabled later if needed */
+    box-sizing: border-box;
+}
