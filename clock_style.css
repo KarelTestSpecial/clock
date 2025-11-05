@@ -36,7 +36,7 @@ body.position-bottom-right { place-content: flex-end flex-end; }
     align-items: center; /* Center the clock elements internally */
     min-width: 300px; /* Prevent from becoming too narrow */
     box-sizing: border-box;
-    padding: 1px;
+    padding: 15px;
 }
 
 #tijd, #datum, #batterij-status {
