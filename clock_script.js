@@ -1,6 +1,6 @@
 
 // Globale DOM Element Referenties (na DOMContentLoaded)
-let tijdElement, datumElement, toggleSecondenKnop, toonInstellingenKnop, instellingenPaneel, batterijStatusElement, toggleBatterijKnop, toggleDagNaamKnop;
+let tijdElement, datumElement, toggleSecondenKnop, toonInstellingenKnop, instellingenPaneel, batterijStatusElement, toggleBatterijKnop, toggleDagNaamKnop, toggleJaarKnop;
 let bewaarFavorietKnop, herstelStandaardKnop, herstelFavorietKnop;
 let fontTijdInput, grootteTijdInput, weergaveGrootteTijd, kleurTijdInput, paddingOnderTijdInput, weergavePaddingOnderTijd, paddingBovenTijdInput, weergavePaddingBovenTijd;
 let fontDatumInput, grootteDatumInput, weergaveGrootteDatum, kleurDatumInput, paddingOnderDatumInput, weergavePaddingOnderDatum;
@@ -22,6 +22,7 @@ const standaardInstellingen = {
     toonSeconden: false,
     toonBatterij: true,
     showDayOfWeek: true,
+    showYear: true,
     fontTijd: 'Verdana, sans-serif',
     grootteTijd: 4.0,
     paddingOnderTijd: 0,
@@ -71,6 +72,7 @@ function initializeDOMReferences() {
     toggleSecondenKnop = document.getElementById('toggle-seconden');
     toggleDatumKnop = document.getElementById('toggle-datum');
     toggleDagNaamKnop = document.getElementById('toggle-dag-naam');
+    toggleJaarKnop = document.getElementById('toggle-jaar');
     toggleNotepadKnop = document.getElementById('toggle-notepad');
     toggleBatterijKnop = document.getElementById('toggle-batterij');
     toonInstellingenKnop = document.getElementById('toon-instellingen');
@@ -127,6 +129,7 @@ function applyTranslations() {
     if (toggleBatterijKnop) toggleBatterijKnop.textContent = chrome.i18n.getMessage('toggleBatteryText');
     toggleDatumKnop.textContent = chrome.i18n.getMessage('toggleDateText');
     toggleDagNaamKnop.textContent = chrome.i18n.getMessage('toggleDayOfWeekText');
+    if (toggleJaarKnop) toggleJaarKnop.textContent = chrome.i18n.getMessage('toggleYearText');
     toggleNotepadKnop.textContent = chrome.i18n.getMessage('toggleNotepadText');
     toonInstellingenKnop.textContent = chrome.i18n.getMessage('toggleSettingsText');
     startScreensaverKnop.textContent = chrome.i18n.getMessage('startScreensaverText');
@@ -342,11 +345,13 @@ async function updateKlok() {
     }
     tijdElement.textContent = tijdString;
     const currentLocale = chrome.i18n.getMessage('dateLocale');
-    const { showDayOfWeek } = await chrome.storage.local.get('showDayOfWeek');
-    const finalShowDayOfWeek = showDayOfWeek === undefined ? standaardInstellingen.showDayOfWeek : showDayOfWeek;
-    const optiesDatum = { year: 'numeric', month: 'long', day: 'numeric' };
-    if (finalShowDayOfWeek) {
+    const { showDayOfWeek, showYear } = await chrome.storage.local.get({ showDayOfWeek: standaardInstellingen.showDayOfWeek, showYear: standaardInstellingen.showYear });
+    const optiesDatum = { month: 'long', day: 'numeric' };
+    if (showDayOfWeek) {
         optiesDatum.weekday = 'long';
+    }
+    if (showYear) {
+        optiesDatum.year = 'numeric';
     }
     datumElement.textContent = nu.toLocaleDateString(currentLocale, optiesDatum);
 }
@@ -391,10 +396,11 @@ function showStatusMessage(message) {
 }
 
 async function bewaarFavorieteInstellingen() {
-    const { isDatumVisible } = await chrome.storage.local.get('isDatumVisible');
+    const { isDatumVisible, showYear } = await chrome.storage.local.get({ isDatumVisible: standaardInstellingen.isDatumVisible, showYear: standaardInstellingen.showYear });
     const huidigeInstellingen = {
         toonSeconden: toonSeconden,
-        isDatumVisible: (isDatumVisible === undefined) ? standaardInstellingen.isDatumVisible : isDatumVisible,
+        isDatumVisible: isDatumVisible,
+        showYear: showYear,
         fontTijd: fontTijdInput.value,
         grootteTijd: parseFloat(grootteTijdInput.value),
         paddingOnderTijd: parseInt(paddingOnderTijdInput.value),
@@ -585,6 +591,12 @@ function setupEventListeners() {
         await chrome.storage.local.set({ isDatumVisible: nieuweZichtbaarheid });
     });
     toggleDagNaamKnop.addEventListener('click', toggleDayOfWeek);
+    toggleJaarKnop.addEventListener('click', async () => {
+        let { showYear } = await chrome.storage.local.get('showYear');
+        const newShowYear = showYear === undefined ? !standaardInstellingen.showYear : !showYear;
+        await chrome.storage.local.set({ showYear: newShowYear });
+        await updateKlok();
+    });
     toonInstellingenKnop.addEventListener('click', toggleInstellingenPaneel);
     bewaarFavorietKnop.addEventListener('click', bewaarFavorieteInstellingen);
     herstelStandaardKnop.addEventListener('click', herstelStandaardInstellingen);

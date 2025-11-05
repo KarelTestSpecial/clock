@@ -156,6 +156,11 @@ button:hover { background-color: #555; }
 
 .knoppen-container button { width: 100%; padding: 6px; font-size: 0.9em; }
 
+#toggle-jaar {
+    margin-top: 22px;
+    padding: 10px;
+}
+
 #status-message {
     position: fixed;
     bottom: 20px;

@@ -17,6 +17,9 @@
     "toggleDayOfWeekText": {
         "message": "Toggle Day Name"
     },
+    "toggleYearText": {
+        "message": "Toggle Year"
+    },
     "toggleNotepadText": {
         "message": "Toggle Notepad"
     },
