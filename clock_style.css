@@ -45,7 +45,7 @@ body.position-bottom-right { place-content: flex-end flex-end; }
     text-align: inherit;
 }
 #tijd { font-size: 3em; color: limegreen; }
-#datum { font-size: 1em; color: lightgray; margin-top: 3px; }
+#datum { font-size: 1em; color: lightgray; }
 
 #notepad-container {
     width: 100%;
