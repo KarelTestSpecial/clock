@@ -1,17 +1,7 @@
 const OFFSCREEN_DOCUMENT_PATH = '/offscreen.html';
+let clockWindowId = null;
 
 // --- Window Management ---
-
-async function findClockWindow() {
-    const windows = await chrome.windows.getAll({ populate: true });
-    const clockWindowUrl = chrome.runtime.getURL("clock_window.html");
-    for (const window of windows) {
-        if (window.tabs && window.tabs.some(tab => tab.url === clockWindowUrl)) {
-            return window;
-        }
-    }
-    return null;
-}
 
 async function createClockWindow() {
   const defaultWidth = 320;
@@ -25,7 +15,7 @@ async function createClockWindow() {
   const screenHeight = primaryDisplay.bounds.height;
 
   try {
-    return await chrome.windows.create({
+    const newWindow = await chrome.windows.create({
       url: chrome.runtime.getURL("clock_window.html"),
       type: "popup",
       width: windowWidth,
@@ -34,21 +24,33 @@ async function createClockWindow() {
       top: Math.max(0, screenHeight - windowHeight - 20),
       focused: true,
     });
+    clockWindowId = newWindow.id;
+    return newWindow;
   } catch (error) {
     return null;
   }
 }
 
 chrome.action.onClicked.addListener(async () => {
-    const existingWindow = await findClockWindow();
-    if (existingWindow) {
+    if (clockWindowId) {
         try {
-            await chrome.windows.remove(existingWindow.id);
+            // Check if the window still exists before trying to remove it
+            await chrome.windows.get(clockWindowId);
+            chrome.windows.remove(clockWindowId);
+            clockWindowId = null; // Assume it will be closed
         } catch (e) {
-            // Ignore error if window was already closed.
+            // Window didn't exist, so create a new one
+            clockWindowId = null; // Reset the stale ID
+            await createClockWindow();
         }
     } else {
         await createClockWindow();
+    }
+});
+
+chrome.windows.onRemoved.addListener((removedWindowId) => {
+    if (removedWindowId === clockWindowId) {
+        clockWindowId = null;
     }
 });
 
@@ -72,14 +74,24 @@ async function triggerAlarmEffects(alarm) {
     const alarmName = alarm.name;
 
     // 1. Bring clock window to front and show visual indicator
-    let windowToFocus = await findClockWindow();
-    if (!windowToFocus) {
-        windowToFocus = await createClockWindow();
+    let windowExists = false;
+    if (clockWindowId) {
+        try {
+            await chrome.windows.get(clockWindowId);
+            windowExists = true;
+        } catch (e) {
+            clockWindowId = null; // Stale ID
+        }
     }
-    if (windowToFocus) {
-        await chrome.windows.update(windowToFocus.id, { focused: true });
-        const tabs = await chrome.tabs.query({ windowId: windowToFocus.id });
-        const clockTab = tabs.find(tab => tab.url.includes("clock_window.html"));
+
+    if (!windowExists) {
+        await createClockWindow(); // This will set the new clockWindowId
+    }
+
+    if (clockWindowId) {
+        await chrome.windows.update(clockWindowId, { focused: true });
+        // The window will have exactly one tab, which is the clock.
+        const [clockTab] = await chrome.tabs.query({ windowId: clockWindowId });
         if (clockTab) {
              chrome.tabs.sendMessage(clockTab.id, { action: 'alarm-triggered' });
         }
