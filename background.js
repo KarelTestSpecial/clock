@@ -1,56 +1,126 @@
 const OFFSCREEN_DOCUMENT_PATH = '/offscreen.html';
-let clockWindowId = null;
 
-// --- Window Management ---
+// --- Dynamic Icon ---
+async function drawTimeIcon() {
+    const canvas = new OffscreenCanvas(128, 128);
+    const ctx = canvas.getContext('2d');
 
-async function createClockWindow() {
-  const defaultWidth = 320;
-  const defaultHeight = 220;
-  const { windowWidth, windowHeight } = await chrome.storage.local.get({ windowWidth: defaultWidth, windowHeight: defaultHeight });
+    if (!ctx) return;
 
-  const screenInfo = await chrome.system.display.getInfo();
-  const primaryDisplay = screenInfo.find(display => display.isPrimary) || screenInfo[0];
-  if (!primaryDisplay) { return null; }
-  const screenWidth = primaryDisplay.bounds.width;
-  const screenHeight = primaryDisplay.bounds.height;
+    // Settings
+    const centerX = 64;
+    const centerY = 64;
+    const radius = 60;
 
-  try {
-    const newWindow = await chrome.windows.create({
-      url: chrome.runtime.getURL("clock_window.html"),
-      type: "popup",
-      width: windowWidth,
-      height: windowHeight,
-      left: Math.max(0, screenWidth - windowWidth - 20),
-      top: Math.max(0, screenHeight - windowHeight - 20),
-      focused: true,
-    });
-    clockWindowId = newWindow.id;
-    return newWindow;
-  } catch (error) {
-    return null;
-  }
+    // Background
+    ctx.fillStyle = '#000000'; // Black background
+    ctx.fillRect(0, 0, 128, 128);
+
+    // Time Calculation
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+
+    // Angles (subtract PI/2 to start at 12 o'clock)
+    const minuteAngle = (minutes / 60) * 2 * Math.PI - Math.PI / 2;
+    const hourAngle = ((hours % 12 + minutes / 60) / 12) * 2 * Math.PI - Math.PI / 2;
+
+    // Draw Hour Hand
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.lineTo(
+        centerX + Math.cos(hourAngle) * (radius * 0.6),
+        centerY + Math.sin(hourAngle) * (radius * 0.6)
+    );
+    ctx.strokeStyle = '#FFFFFF';
+    ctx.lineWidth = 10;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    // Draw Minute Hand
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.lineTo(
+        centerX + Math.cos(minuteAngle) * (radius * 0.85),
+        centerY + Math.sin(minuteAngle) * (radius * 0.85)
+    );
+    ctx.strokeStyle = '#FFFFFF';
+    ctx.lineWidth = 6;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    // Center Dot
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 4, 0, 2 * Math.PI);
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fill();
+
+    const imageData = ctx.getImageData(0, 0, 128, 128);
+    chrome.action.setIcon({ imageData: imageData });
 }
 
-chrome.action.onClicked.addListener(async () => {
-    if (clockWindowId) {
-        try {
-            // Check if the window still exists before trying to remove it
-            await chrome.windows.get(clockWindowId);
-            chrome.windows.remove(clockWindowId);
-            clockWindowId = null; // Assume it will be closed
-        } catch (e) {
-            // Window didn't exist, so create a new one
-            clockWindowId = null; // Reset the stale ID
-            await createClockWindow();
-        }
-    } else {
-        await createClockWindow();
+// Update icon every minute using alarms for reliability
+chrome.alarms.create('update-icon', { periodInMinutes: 1 });
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+    if (alarm.name === 'update-icon') {
+        drawTimeIcon();
     }
 });
 
-chrome.windows.onRemoved.addListener((removedWindowId) => {
-    if (removedWindowId === clockWindowId) {
-        clockWindowId = null;
+// Initial draw
+drawTimeIcon();
+
+
+// --- Window Management ---
+
+async function findClockWindow() {
+    const windows = await chrome.windows.getAll({ populate: true });
+    const clockWindowUrl = chrome.runtime.getURL("clock_window.html");
+    for (const window of windows) {
+        if (window.tabs && window.tabs.some(tab => tab.url === clockWindowUrl)) {
+            return window;
+        }
+    }
+    return null;
+}
+
+async function createClockWindow() {
+    const defaultWidth = 320;
+    const defaultHeight = 220;
+    const { windowWidth, windowHeight } = await chrome.storage.local.get({ windowWidth: defaultWidth, windowHeight: defaultHeight });
+
+    const screenInfo = await chrome.system.display.getInfo();
+    const primaryDisplay = screenInfo.find(display => display.isPrimary) || screenInfo[0];
+    if (!primaryDisplay) { return null; }
+    const screenWidth = primaryDisplay.bounds.width;
+    const screenHeight = primaryDisplay.bounds.height;
+
+    try {
+        return await chrome.windows.create({
+            url: chrome.runtime.getURL("clock_window.html"),
+            type: "popup",
+            width: windowWidth,
+            height: windowHeight,
+            left: Math.max(0, screenWidth - windowWidth - 20),
+            top: Math.max(0, screenHeight - windowHeight - 20),
+            focused: true,
+        });
+    } catch (error) {
+        return null;
+    }
+}
+
+chrome.action.onClicked.addListener(async () => {
+    const existingWindow = await findClockWindow();
+    if (existingWindow) {
+        try {
+            await chrome.windows.remove(existingWindow.id);
+        } catch (e) {
+            // Ignore error if window was already closed.
+        }
+    } else {
+        await createClockWindow();
     }
 });
 
@@ -71,29 +141,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 chrome.alarms.onAlarm.addListener(triggerAlarmEffects);
 
 async function triggerAlarmEffects(alarm) {
+    if (alarm.name === 'update-icon') return;
     const alarmName = alarm.name;
 
     // 1. Bring clock window to front and show visual indicator
-    let windowExists = false;
-    if (clockWindowId) {
-        try {
-            await chrome.windows.get(clockWindowId);
-            windowExists = true;
-        } catch (e) {
-            clockWindowId = null; // Stale ID
-        }
+    let windowToFocus = await findClockWindow();
+    if (!windowToFocus) {
+        windowToFocus = await createClockWindow();
     }
-
-    if (!windowExists) {
-        await createClockWindow(); // This will set the new clockWindowId
-    }
-
-    if (clockWindowId) {
-        await chrome.windows.update(clockWindowId, { focused: true });
-        // The window will have exactly one tab, which is the clock.
-        const [clockTab] = await chrome.tabs.query({ windowId: clockWindowId });
+    if (windowToFocus) {
+        await chrome.windows.update(windowToFocus.id, { focused: true });
+        const tabs = await chrome.tabs.query({ windowId: windowToFocus.id });
+        const clockTab = tabs.find(tab => tab.url.includes("clock_window.html"));
         if (clockTab) {
-             chrome.tabs.sendMessage(clockTab.id, { action: 'alarm-triggered' });
+            chrome.tabs.sendMessage(clockTab.id, { action: 'alarm-triggered' });
         }
     }
 
@@ -111,9 +172,9 @@ async function triggerAlarmEffects(alarm) {
 let creatingOffscreenDocument = null;
 
 async function hasOffscreenDocument(path) {
-  const offscreenUrl = chrome.runtime.getURL(path);
-  const matchedClients = await clients.matchAll();
-  return matchedClients.some(c => c.url === offscreenUrl);
+    const offscreenUrl = chrome.runtime.getURL(path);
+    const matchedClients = await clients.matchAll();
+    return matchedClients.some(c => c.url === offscreenUrl);
 }
 
 async function playSoundOffscreen(sound, duration) {

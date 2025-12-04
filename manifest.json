@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "1.6.1",
+  "version": "1.6.8",
   "description": "__MSG_extDescription__",
   "default_locale": "en",
   "icons": {
@@ -22,8 +22,8 @@
   "action": {
     "default_title": "__MSG_tooltipOpenClock__",
     "default_icon": {
-        "16": "clock_icon16x16.png",
-        "48": "clock_icon48x48.png"
+      "16": "clock_icon16x16.png",
+      "48": "clock_icon48x48.png"
     }
   }
 }
