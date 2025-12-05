@@ -69,7 +69,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 });
 
 // Initial draw
-drawTimeIcon();
+setTimeout(drawTimeIcon, 100);
 
 
 // --- Window Management ---

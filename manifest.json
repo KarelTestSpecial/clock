@@ -5,9 +5,9 @@
   "description": "__MSG_extDescription__",
   "default_locale": "en",
   "icons": {
-    "16": "clock_icon16x16.png",
-    "48": "clock_icon48x48.png",
-    "128": "clock_icon128x128.png"
+    "16": "icon/clock_icon16x16.png",
+    "48": "icon/clock_icon48x48.png",
+    "128": "icon/clock_icon128x128.png"
   },
   "permissions": [
     "windows",
@@ -22,8 +22,8 @@
   "action": {
     "default_title": "__MSG_tooltipOpenClock__",
     "default_icon": {
-      "16": "clock_icon16x16.png",
-      "48": "clock_icon48x48.png"
+      "16": "icon/clock_icon16x16.png",
+      "48": "icon/clock_icon48x48.png"
     }
   }
 }
