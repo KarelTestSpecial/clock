@@ -146,6 +146,11 @@ button:hover { background-color: #555; }
 }
 .instellingen-paneel input[type="range"] { padding: 0; }
 
+.instellingen-paneel input.flatpickr-input {
+    cursor: pointer;
+    text-align: center;
+}
+
 .knoppen-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* 2 columns */

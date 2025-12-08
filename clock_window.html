@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="htmlPageTitle"></title>
+    <link rel="stylesheet" href="lib/flatpickr/flatpickr.min.css" id="flatpickr-light-theme" disabled>
+    <link rel="stylesheet" href="lib/flatpickr/flatpickr.dark.min.css" id="flatpickr-dark-theme">
     <link rel="stylesheet" href="clock_style.css">
 </head>
 <body>
@@ -26,7 +28,7 @@
 
                 <div class="instelling-groep">
                     <h4>Alarm 1</h4>
-                    <input type="time" id="alarm-tijd-1">
+                    <input type="text" id="alarm-tijd-1" class="time-picker">
                     <select id="alarm-geluid-1">
                         <option value="beep">Beep</option>
                         <option value="bell">Bell</option>
@@ -37,7 +39,7 @@
                 </div>
                 <div class="instelling-groep">
                     <h4>Alarm 2</h4>
-                    <input type="time" id="alarm-tijd-2">
+                    <input type="text" id="alarm-tijd-2" class="time-picker">
                     <select id="alarm-geluid-2">
                         <option value="beep">Beep</option>
                         <option value="bell">Bell</option>
@@ -138,6 +140,7 @@
         </div>
     </div>
     <div id="status-message"></div>
+    <script src="lib/flatpickr/flatpickr.min.js"></script>
     <script src="clock_script.js"></script>
 </body>
 </html>

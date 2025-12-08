@@ -115,7 +115,16 @@ function initializeDOMReferences() {
 
     // Alarmen
     for (let i = 1; i <= 2; i++) {
-        document.getElementById(`alarm-tijd-${i}`).addEventListener('change', (e) => saveAlarmSetting(i, 'time', e.target.value));
+        flatpickr(`#alarm-tijd-${i}`, {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true,
+            onChange: (selectedDates, dateStr) => {
+                saveAlarmSetting(i, 'time', dateStr);
+            }
+        });
+
         document.getElementById(`alarm-toggle-${i}`).addEventListener('change', (e) => saveAlarmSetting(i, 'enabled', e.target.checked));
         document.getElementById(`alarm-geluid-${i}`).addEventListener('change', (e) => saveAlarmSetting(i, 'sound', e.target.value));
         document.getElementById(`alarm-duur-${i}`).addEventListener('change', (e) => saveAlarmSetting(i, 'duration', parseInt(e.target.value)));
@@ -185,8 +194,28 @@ function setKlokLayout(positie) {
 }
 
 
+
+async function updateFlatpickrTheme() {
+    // Check system preference for dark mode
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    const lightThemeLink = document.getElementById('flatpickr-light-theme');
+    const darkThemeLink = document.getElementById('flatpickr-dark-theme');
+
+    if (lightThemeLink && darkThemeLink) {
+        if (isDarkMode) {
+            lightThemeLink.disabled = true;
+            darkThemeLink.disabled = false;
+        } else {
+            lightThemeLink.disabled = false;
+            darkThemeLink.disabled = true;
+        }
+    }
+}
+
 function applyAllSettings(settings) {
     document.body.style.backgroundColor = settings.achtergrondKleur;
+    updateFlatpickrTheme(); // Update Flatpickr theme based on the applied background color
     toonSeconden = settings.toonSeconden;
     toonBatterij = settings.toonBatterij;
 
@@ -268,7 +297,10 @@ async function laadInstellingen() {
     }
     for (let i = 1; i <= 2; i++) {
         const settings = opgeslagenInstellingen[`alarm${i}Settings`];
-        document.getElementById(`alarm-tijd-${i}`).value = settings.time;
+        const timeInput = document.getElementById(`alarm-tijd-${i}`);
+        if (timeInput && timeInput._flatpickr) {
+            timeInput._flatpickr.setDate(settings.time);
+        }
         document.getElementById(`alarm-toggle-${i}`).checked = settings.enabled;
         document.getElementById(`alarm-geluid-${i}`).value = settings.sound;
         document.getElementById(`alarm-duur-${i}`).value = settings.duration;
@@ -638,6 +670,9 @@ function setupEventListeners() {
     kleurBatterijInput.addEventListener('input', (e) => applyAndSaveSetting('kleurBatterij', e.target.value, batterijStatusElement, 'color'));
     achtergrondKleurInput.addEventListener('input', (e) => applyAndSaveSetting('achtergrondKleur', e.target.value, document.body, 'backgroundColor'));    
     
+    // System theme change listener
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFlatpickrTheme);
+
     window.addEventListener('resize', async () => {
         if (isScreensaverActive) {
             try {
