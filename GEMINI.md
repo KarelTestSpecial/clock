@@ -5,7 +5,7 @@
 
 ### Key Features
 - **Dynamic Icon:** The extension toolbar icon updates in real-time to show the current time (analog style).
-- **Customizable UI:** Users can adjust fonts, sizes, colors, and layout for time, date, battery, and notepad.
+- **Customizable UI:** Users can adjust fonts, sizes, colors (including background element colors), and layout for time, date, battery, and notepad.
 - **Alarms:** Supports two independent alarms with sound playback via an offscreen document. Modern time picking is provided via **Flatpickr**.
 - **Screensaver:** Prevents screen burn-in.
 - **Persistence:** Settings are saved to `chrome.storage.local`.

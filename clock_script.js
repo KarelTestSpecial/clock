@@ -5,7 +5,7 @@ let bewaarFavorietKnop, herstelStandaardKnop, herstelFavorietKnop;
 let fontTijdInput, grootteTijdInput, weergaveGrootteTijd, kleurTijdInput, paddingOnderTijdInput, weergavePaddingOnderTijd, paddingBovenTijdInput, weergavePaddingBovenTijd;
 let fontDatumInput, grootteDatumInput, weergaveGrootteDatum, kleurDatumInput, paddingOnderDatumInput, weergavePaddingOnderDatum;
 let fontBatterijInput, kleurBatterijInput, grootteBatterijInput, weergaveGrootteBatterij, breedteBatterijInput, weergaveBreedteBatterij, paddingOnderBatterijInput, weergavePaddingOnderBatterij;
-let achtergrondKleurInput, klokContainer, notepadContainer, notepadArea, toggleNotepadKnop;
+let achtergrondKleurInput, achtergrondElementenKleurInput, klokContainer, notepadContainer, notepadArea, toggleNotepadKnop;
 let notepadTextAlignSelect, fontNotepadInput, grootteNotepadInput, weergaveGrootteNotepad;
 let toggleDatumKnop, startScreensaverKnop, statusMessageElement, klokPositieSelect;
 
@@ -37,6 +37,7 @@ const standaardInstellingen = {
     breedteBatterij: 1.0,
     paddingOnderBatterij: 0,
     kleurBatterij: '#B0B0B0',
+    achtergrondElementenKleur: '#282828',
     achtergrondKleur: '#000000',
     klokPositie: 'top-center',
     isDatumVisible: true,
@@ -105,6 +106,7 @@ function initializeDOMReferences() {
     paddingOnderBatterijInput = document.getElementById('padding-onder-batterij');
     weergavePaddingOnderBatterij = document.getElementById('weergave-padding-onder-batterij');
     achtergrondKleurInput = document.getElementById('achtergrond-kleur');
+    achtergrondElementenKleurInput = document.getElementById('achtergrond-elementen-kleur');
     klokPositieSelect = document.getElementById('klok-positie-select');
     notepadContainer = document.getElementById('notepad-container');
     notepadArea = document.getElementById('notepad-area');
@@ -163,6 +165,7 @@ function applyTranslations() {
     document.getElementById('lblBreedteBatterijText').textContent = chrome.i18n.getMessage('batteryWidthLabelText');
     document.getElementById('lblPaddingOnderBatterijText').textContent = chrome.i18n.getMessage('batteryPaddingLabel');
     document.getElementById('notepadLabel').textContent = chrome.i18n.getMessage('notepadLabel');
+    document.getElementById('lblAchtergrondElementen').textContent = chrome.i18n.getMessage('backgroundElementsColorLabel');
     document.getElementById('lblAchtergrondKleur').textContent = chrome.i18n.getMessage('backgroundColorLabel');
     document.getElementById('lblNotepadTextAlign').textContent = chrome.i18n.getMessage('notepadTextAlignLabel');
     document.getElementById('lblFontNotepad').textContent = chrome.i18n.getMessage('notepadFontLabel');
@@ -264,6 +267,9 @@ function applyAllSettings(settings) {
     if (paddingOnderBatterijInput) paddingOnderBatterijInput.value = settings.paddingOnderBatterij;
     if (weergavePaddingOnderBatterij) weergavePaddingOnderBatterij.textContent = settings.paddingOnderBatterij + 'px';
     if (achtergrondKleurInput) achtergrondKleurInput.value = settings.achtergrondKleur;
+    if (achtergrondElementenKleurInput) achtergrondElementenKleurInput.value = settings.achtergrondElementenKleur;
+    if (instellingenPaneel) instellingenPaneel.style.backgroundColor = settings.achtergrondElementenKleur;
+    if (notepadArea) notepadArea.style.backgroundColor = settings.achtergrondElementenKleur;
     if (klokPositieSelect) klokPositieSelect.value = settings.klokPositie;
 }
 
@@ -447,6 +453,7 @@ async function bewaarFavorieteInstellingen() {
         grootteBatterij: parseFloat(grootteBatterijInput.value),
         breedteBatterij: parseFloat(breedteBatterijInput.value),
         paddingOnderBatterij: parseInt(paddingOnderBatterijInput.value),
+        achtergrondElementenKleur: achtergrondElementenKleurInput.value,
         achtergrondKleur: achtergrondKleurInput.value,
         klokPositie: klokPositieSelect.value,
         notepadTextAlign: notepadTextAlignSelect.value,
@@ -668,7 +675,14 @@ function setupEventListeners() {
     kleurTijdInput.addEventListener('input', (e) => applyAndSaveSetting('kleurTijd', e.target.value, tijdElement, 'color'));
     kleurDatumInput.addEventListener('input', (e) => applyAndSaveSetting('kleurDatum', e.target.value, datumElement, 'color'));
     kleurBatterijInput.addEventListener('input', (e) => applyAndSaveSetting('kleurBatterij', e.target.value, batterijStatusElement, 'color'));
-    achtergrondKleurInput.addEventListener('input', (e) => applyAndSaveSetting('achtergrondKleur', e.target.value, document.body, 'backgroundColor'));    
+    achtergrondKleurInput.addEventListener('input', (e) => applyAndSaveSetting('achtergrondKleur', e.target.value, document.body, 'backgroundColor'));
+    
+    achtergrondElementenKleurInput.addEventListener('input', async (e) => {
+        const val = e.target.value;
+        if (instellingenPaneel) instellingenPaneel.style.backgroundColor = val;
+        if (notepadArea) notepadArea.style.backgroundColor = val;
+        await chrome.storage.local.set({ achtergrondElementenKleur: val });
+    });
     
     // System theme change listener
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFlatpickrTheme);

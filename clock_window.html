@@ -19,6 +19,7 @@
         </div>
 
         <div id="knoppen-wrapper">
+            <button id="toggle-notepad"></button>
             <button id="toon-instellingen"></button>
             <button id="start-screensaver"></button>
         </div>
@@ -55,8 +56,8 @@
                     <button id="herstel-standaard"></button>
                     <button id="toggle-dag-naam"></button>
                     <button id="herstel-favoriet"></button>
+                    <button id="toggle-jaar"></button>
                     <button id="toggle-batterij"></button>
-                    <button id="toggle-notepad"></button>
                 </div>
             <div class="instelling-groep">
                 <h4 id="timeLabel">Time</h4>
@@ -89,7 +90,16 @@
                     <input type="color" id="kleur-datum">
                     <label for="padding-onder-datum"><span id="lblPaddingOnderDatumText"></span> <span id="weergave-padding-onder-datum"></span></label>
                     <input type="range" id="padding-onder-datum" min="0" max="50" step="1">
-                    <button id="toggle-jaar"></button>
+                    <label for="klok-positie-select" id="lblKlokPositie"></label>
+                    <select id="klok-positie-select">
+                        <option value="top-left" id="optPosTopLeft"></option>
+                        <option value="top-center" id="optPosTopCenter"></option>
+                        <option value="top-right" id="optPosTopRight"></option>
+                        <option value="center-center" id="optPosCenterCenter"></option>
+                        <option value="bottom-left" id="optPosBottomLeft"></option>
+                        <option value="bottom-center" id="optPosBottomCenter"></option>
+                        <option value="bottom-right" id="optPosBottomRight"></option>
+                    </select>
                 </div>
                 <div class="instelling-groep">
                     <h4 id="batteryLabel">Battery</h4>
@@ -103,10 +113,10 @@
                     <input type="range" id="grootte-batterij" min="1.0" max="3.0" step="0.1">
                     <label for="kleur-batterij" id="lblKleurBatterij"></label>
                     <input type="color" id="kleur-batterij">
-                    <label for="breedte-batterij"><span id="lblBreedteBatterijText"></span> <span id="weergave-breedte-batterij"></span></label>
-                    <input type="range" id="breedte-batterij" min="0.5" max="2.5" step="0.05">
                     <label for="padding-onder-batterij"><span id="lblPaddingOnderBatterijText"></span> <span id="weergave-padding-onder-batterij"></span></label>
                     <input type="range" id="padding-onder-batterij" min="0" max="50" step="1">
+                    <label for="breedte-batterij"><span id="lblBreedteBatterijText"></span> <span id="weergave-breedte-batterij"></span></label>
+                    <input type="range" id="breedte-batterij" min="0.5" max="2.5" step="0.05">
                 </div>
                 <div class="instelling-groep">
                     <h4 id="notepadLabel">Notepad & General</h4>
@@ -124,16 +134,8 @@
                         <option value="center" id="optTextAlignCenter"></option>
                         <option value="right" id="optTextAlignRight"></option>
                     </select>
-                    <label for="klok-positie-select" id="lblKlokPositie"></label>
-                    <select id="klok-positie-select">
-                        <option value="top-left" id="optPosTopLeft"></option>
-                        <option value="top-center" id="optPosTopCenter"></option>
-                        <option value="top-right" id="optPosTopRight"></option>
-                        <option value="center-center" id="optPosCenterCenter"></option>
-                        <option value="bottom-left" id="optPosBottomLeft"></option>
-                        <option value="bottom-center" id="optPosBottomCenter"></option>
-                        <option value="bottom-right" id="optPosBottomRight"></option>
-                    </select>
+                    <label for="achtergrond-elementen-kleur" id="lblAchtergrondElementen"></label>
+                    <input type="color" id="achtergrond-elementen-kleur">
                     <label for="achtergrond-kleur" id="lblAchtergrondKleur"></label>
                     <input type="color" id="achtergrond-kleur">
                 </div>

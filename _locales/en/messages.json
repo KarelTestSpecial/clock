@@ -74,6 +74,9 @@
     "batteryPaddingLabel": {
         "message": "Padding Below Battery"
     },
+    "backgroundElementsColorLabel": {
+        "message": "Background Elements"
+    },
     "backgroundColorLabel": {
         "message": "Background Color"
     },

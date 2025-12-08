@@ -154,16 +154,20 @@ button:hover { background-color: #555; }
 .knoppen-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* 2 columns */
-    grid-template-rows: repeat(4, auto);   /* 4 rows */
+    grid-template-rows: repeat(4, 1fr);   /* Make rows fill space evenly */
     gap: 6px;
     grid-column: span 2; /* Span across two grid columns */
 }
 
-.knoppen-container button { width: 100%; padding: 6px; font-size: 0.9em; }
-
-#toggle-jaar {
-    margin-top: 22px;
-    padding: 10px;
+.knoppen-container button {
+    width: 100%;
+    padding: 6px 8px; /* Consistent padding for all buttons */
+    font-size: 0.9em;
+    height: 100%; /* Ensure button fills its grid cell height */
+    display: flex; /* Use flex to center text vertically */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 #status-message {

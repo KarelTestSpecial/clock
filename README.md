@@ -10,7 +10,7 @@ Click the clock icon in your browser's toolbar to open the clock window. Clickin
 
 - **Clear Digital Clock:** A large, easy-to-read digital clock is the centerpiece of the extension.
 - **Date and Battery Status:** Displays the current date and your device's remaining battery percentage.
-- **Dual Alarms:** Set up to two persistent alarms with customizable sounds and durations. The clock window will automatically open and play a sound when an alarm goes off.
+- **Dual Alarms:** Set up to two persistent alarms with customizable sounds and durations, featuring a modern time picker interface for easy scheduling. The clock window will automatically open and play a sound when an alarm goes off.
 - **Built-in Notepad:** A convenient, resizable notepad is available for jotting down quick notes and reminders.
 - **Screensaver Mode:** An elegant screensaver mode that gently moves the clock around the screen to prevent burn-in.
 
@@ -31,6 +31,7 @@ We believe your clock should look exactly the way you want it. Use the settings 
 - **Colors:**
     - Pick any color you like for the **Time**, **Date**, and **Battery** text.
     - Set a custom **Background Color** to match your mood or theme.
+    - Set a custom **Background Elements Color** for the notepad and settings panel.
 
 - **Layout and Position:**
     - Position the entire clock widget in one of seven locations on the screen (e.g., top-left, center, bottom-right).
