@@ -47,7 +47,6 @@ const standaardInstellingen = {
     notepadTextAlign: 'center',
     fontNotepad: 'Arial, sans-serif',
     grootteNotepad: 1.5,
-    notepadHeight: null,
     alarm1Settings: {
         enabled: false,
         time: '08:00',
@@ -316,9 +315,6 @@ async function laadInstellingen() {
     applyDatumVisibility(opgeslagenInstellingen.isDatumVisible);
     applyBatteryVisibility(opgeslagenInstellingen.toonBatterij);
     applyNotepadSettings(opgeslagenInstellingen);
-    if (opgeslagenInstellingen.notepadHeight && notepadArea) {
-        notepadArea.style.height = `${opgeslagenInstellingen.notepadHeight}px`;
-    }
     for (let i = 1; i <= 2; i++) {
         const settings = opgeslagenInstellingen[`alarm${i}Settings`];
         const timeInput = document.getElementById(`alarm-tijd-${i}`);
@@ -478,7 +474,6 @@ async function bewaarFavorieteInstellingen() {
         fontNotepad: fontNotepadInput.value,
         grootteNotepad: parseFloat(grootteNotepadInput.value),
         kleurNotepad: kleurNotepadInput.value,
-        notepadHeight: notepadArea ? notepadArea.offsetHeight : null,
         alarm1Settings: {
             enabled: document.getElementById('alarm-toggle-1').checked,
             time: document.getElementById('alarm-tijd-1').value,
@@ -503,7 +498,7 @@ async function herstelStandaardInstellingen() {
     if (notepadArea) notepadArea.style.height = '';
     const instellingenOmOpTeSlaan = { ...standaardInstellingen };
     delete instellingenOmOpTeSlaan.notepadContent;
-    await chrome.storage.local.set({ ...instellingenOmOpTeSlaan, notepadHeight: null });
+    await chrome.storage.local.set({ ...instellingenOmOpTeSlaan });
     await laadInstellingen();
     await updateActualNotepadVisibility();
 }
@@ -685,12 +680,6 @@ function setupEventListeners() {
     
     if (notepadArea) {
         notepadArea.addEventListener('input', saveNotepadContent);
-        let resizeTimeout;
-        const resizeObserver = new ResizeObserver(() => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => chrome.storage.local.set({ notepadHeight: notepadArea.offsetHeight }), 500);
-        });
-        resizeObserver.observe(notepadArea);
     }
     if (notepadTextAlignSelect) notepadTextAlignSelect.addEventListener('input', (e) => applyAndSaveSetting('notepadTextAlign', e.target.value, notepadArea, 'textAlign'));
     if (fontNotepadInput) fontNotepadInput.addEventListener('input', (e) => applyAndSaveSetting('fontNotepad', e.target.value, notepadArea, 'fontFamily'));
