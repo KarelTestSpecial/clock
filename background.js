@@ -136,6 +136,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         sendResponse({ status: "Alarm cleared" });
     } else if (request.action === 'stop-alarm-sound') {
         stopSoundOffscreen();
+    } else if (request.action === 'redraw-icon') {
+        drawTimeIcon();
     }
     return false;
 });

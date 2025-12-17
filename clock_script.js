@@ -711,7 +711,9 @@ function setupEventListeners() {
 
     if (iconColorPicker) {
         iconColorPicker.addEventListener('input', (e) => {
-            chrome.storage.local.set({ iconColor: e.target.value });
+            chrome.storage.local.set({ iconColor: e.target.value }, () => {
+                chrome.runtime.sendMessage({ action: 'redraw-icon' });
+            });
         });
     }
     
