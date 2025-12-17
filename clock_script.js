@@ -5,7 +5,7 @@ let bewaarFavorietKnop, herstelStandaardKnop, herstelFavorietKnop;
 let fontTijdInput, grootteTijdInput, weergaveGrootteTijd, kleurTijdInput, paddingOnderTijdInput, weergavePaddingOnderTijd, paddingBovenTijdInput, weergavePaddingBovenTijd;
 let fontDatumInput, grootteDatumInput, weergaveGrootteDatum, kleurDatumInput, paddingOnderDatumInput, weergavePaddingOnderDatum;
 let fontBatterijInput, kleurBatterijInput, grootteBatterijInput, weergaveGrootteBatterij, breedteBatterijInput, weergaveBreedteBatterij, paddingOnderBatterijInput, weergavePaddingOnderBatterij;
-let achtergrondKleurInput, achtergrondElementenKleurInput, klokContainer, notepadContainer, notepadArea, toggleNotepadKnop, iconColorPicker;
+let achtergrondKleurInput, achtergrondElementenKleurInput, klokContainer, notepadContainer, notepadArea, toggleNotepadKnop, iconColorPicker, kleurNotepadInput;
 let notepadTextAlignSelect, fontNotepadInput, grootteNotepadInput, weergaveGrootteNotepad;
 let toggleDatumKnop, startScreensaverKnop, statusMessageElement, klokPositieSelect;
 
@@ -23,6 +23,7 @@ const standaardInstellingen = {
     toonBatterij: true,
     showDayOfWeek: true,
     showYear: true,
+    kleurNotepad: '#FFFFFF',
     fontTijd: 'Verdana, sans-serif',
     grootteTijd: 4.0,
     paddingOnderTijd: 0,
@@ -116,6 +117,7 @@ function initializeDOMReferences() {
     grootteNotepadInput = document.getElementById('grootte-notepad');
     weergaveGrootteNotepad = document.getElementById('weergave-grootte-notepad');
     iconColorPicker = document.getElementById('icon-color-picker');
+    kleurNotepadInput = document.getElementById('kleur-notepad');
 
     // Alarmen
     for (let i = 1; i <= 2; i++) {
@@ -146,7 +148,7 @@ function applyTranslations() {
     toggleNotepadKnop.textContent = chrome.i18n.getMessage('toggleNotepadText');
     toonInstellingenKnop.textContent = chrome.i18n.getMessage('toggleSettingsText');
     startScreensaverKnop.textContent = chrome.i18n.getMessage('startScreensaverText');
-    stopAlarmKnop.textContent = chrome.i18n.getMessage('stopAlarmText');
+    stopAlarmKnop.textContent = 'STOP';
     document.getElementById('settingsTitleText').textContent = chrome.i18n.getMessage('settingsTitleText');
     document.getElementById('timeLabel').textContent = chrome.i18n.getMessage('timeLabel');
     document.getElementById('lblFontTijd').textContent = chrome.i18n.getMessage('timeFontLabel');
@@ -171,6 +173,7 @@ function applyTranslations() {
     document.getElementById('lblAchtergrondElementen').textContent = chrome.i18n.getMessage('backgroundElementsColorLabel');
     document.getElementById('lblAchtergrondKleur').textContent = chrome.i18n.getMessage('backgroundColorLabel');
     document.getElementById('lblNotepadTextAlign').textContent = chrome.i18n.getMessage('notepadTextAlignLabel');
+    document.getElementById('lblKleurNotepad').textContent = chrome.i18n.getMessage('notepadColorLabel');
     document.getElementById('lblFontNotepad').textContent = chrome.i18n.getMessage('notepadFontLabel');
     document.getElementById('lblGrootteNotepadText').textContent = chrome.i18n.getMessage('notepadSizeLabelText');
     document.getElementById('optTextAlignLeft').textContent = chrome.i18n.getMessage('textAlignLeft');
@@ -275,9 +278,10 @@ function applyAllSettings(settings) {
     if (instellingenPaneel) instellingenPaneel.style.backgroundColor = settings.achtergrondElementenKleur;
     if (notepadArea) {
         notepadArea.style.backgroundColor = settings.achtergrondElementenKleur;
-        notepadArea.style.color = settings.kleurDatum;
+        notepadArea.style.color = settings.kleurNotepad;
     }
     if (klokPositieSelect) klokPositieSelect.value = settings.klokPositie;
+    if (kleurNotepadInput) kleurNotepadInput.value = settings.kleurNotepad;
 }
 
 function applyNotepadSettings(settings) {
@@ -473,6 +477,7 @@ async function bewaarFavorieteInstellingen() {
         notepadTextAlign: notepadTextAlignSelect.value,
         fontNotepad: fontNotepadInput.value,
         grootteNotepad: parseFloat(grootteNotepadInput.value),
+        kleurNotepad: kleurNotepadInput.value,
         notepadHeight: notepadArea ? notepadArea.offsetHeight : null,
         alarm1Settings: {
             enabled: document.getElementById('alarm-toggle-1').checked,
@@ -494,9 +499,6 @@ async function bewaarFavorieteInstellingen() {
 async function herstelStandaardInstellingen() {
     applyAllSettings(standaardInstellingen);
     applyDatumVisibility(standaardInstellingen.isDatumVisible);
-    if (notepadArea) {
-        notepadArea.style.color = standaardInstellingen.kleurDatum;
-    }
     applyNotepadSettings({ ...standaardInstellingen, notepadContent: notepadArea.value });
     if (notepadArea) notepadArea.style.height = '';
     const instellingenOmOpTeSlaan = { ...standaardInstellingen };
@@ -680,12 +682,6 @@ function setupEventListeners() {
     grootteBatterijInput.addEventListener('input', (e) => applyAndSaveSetting('grootteBatterij', parseFloat(e.target.value), batterijStatusElement, 'fontSize'));
     paddingOnderBatterijInput.addEventListener('input', (e) => applyAndSaveSetting('paddingOnderBatterij', parseInt(e.target.value), batterijStatusElement, 'paddingBottom'));
     breedteBatterijInput.addEventListener('input', (e) => applyAndSaveSetting('breedteBatterij', parseFloat(e.target.value), batterijStatusElement, 'transform'));
-    kleurDatumInput.addEventListener('input', (e) => {
-        applyAndSaveSetting('kleurDatum', e.target.value, datumElement, 'color');
-        if (notepadArea) {
-            notepadArea.style.color = e.target.value;
-        }
-    });
     
     if (notepadArea) {
         notepadArea.addEventListener('input', saveNotepadContent);
@@ -703,6 +699,7 @@ function setupEventListeners() {
     kleurTijdInput.addEventListener('input', (e) => applyAndSaveSetting('kleurTijd', e.target.value, tijdElement, 'color'));
     kleurDatumInput.addEventListener('input', (e) => applyAndSaveSetting('kleurDatum', e.target.value, datumElement, 'color'));
     kleurBatterijInput.addEventListener('input', (e) => applyAndSaveSetting('kleurBatterij', e.target.value, batterijStatusElement, 'color'));
+    if (kleurNotepadInput) kleurNotepadInput.addEventListener('input', (e) => applyAndSaveSetting('kleurNotepad', e.target.value, notepadArea, 'color'));
     achtergrondKleurInput.addEventListener('input', (e) => applyAndSaveSetting('achtergrondKleur', e.target.value, document.body, 'backgroundColor'));
     
     achtergrondElementenKleurInput.addEventListener('input', async (e) => {
