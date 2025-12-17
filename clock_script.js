@@ -369,10 +369,10 @@ async function applyAndSaveSetting(key, value, element, styleProperty) {
             }
         } else if (key.startsWith('padding')) {
             finalValue += 'px';
-             if (key === 'paddingOnderTijd') weergavePaddingOnderTijd.textContent = finalValue;
-             else if (key === 'paddingBovenTijd') weergavePaddingBovenTijd.textContent = finalValue;
-             else if (key === 'paddingOnderDatum') weergavePaddingOnderDatum.textContent = finalValue;
-             else if (key === 'paddingOnderBatterij') weergavePaddingOnderBatterij.textContent = finalValue;
+            if (key === 'paddingOnderTijd') weergavePaddingOnderTijd.textContent = finalValue;
+            else if (key === 'paddingBovenTijd') weergavePaddingBovenTijd.textContent = finalValue;
+            else if (key === 'paddingOnderDatum') weergavePaddingOnderDatum.textContent = finalValue;
+            else if (key === 'paddingOnderBatterij') weergavePaddingOnderBatterij.textContent = finalValue;
         } else if (key === 'breedteBatterij') {
             finalValue = `scaleX(${value})`;
             if (weergaveBreedteBatterij) weergaveBreedteBatterij.textContent = value;
@@ -409,9 +409,10 @@ async function updateKlok() {
 }
 
 async function updateActualNotepadVisibility() {
-    let { isNotepadVisible } = await chrome.storage.local.get({isNotepadVisible: standaardInstellingen.isNotepadVisible});
+    let { isNotepadVisible } = await chrome.storage.local.get({ isNotepadVisible: standaardInstellingen.isNotepadVisible });
     if (notepadContainer) {
         notepadContainer.classList.toggle('hidden', !isNotepadVisible);
+        document.body.classList.toggle('notepad-open', isNotepadVisible);
     }
 }
 
@@ -583,11 +584,11 @@ async function toggleScreensaver(event) {
 
     if (isScreensaverActive) {
         document.addEventListener('click', handleScreensaverBackgroundClick, true);
-         try {
-             if ((await chrome.windows.get(currentWindow.id)).state !== "fullscreen") {
+        try {
+            if ((await chrome.windows.get(currentWindow.id)).state !== "fullscreen") {
                 await chrome.windows.update(currentWindow.id, { state: "fullscreen" });
-             }
-         } catch (e) { console.error("Could not set to fullscreen:", e); }
+            }
+        } catch (e) { console.error("Could not set to fullscreen:", e); }
         startScreensaver();
     } else {
         document.removeEventListener('click', handleScreensaverBackgroundClick, true);
@@ -614,7 +615,7 @@ function applyBatteryVisibility(isVisible) {
 
 async function updateBatteryStatus() {
     if (!navigator.getBattery) {
-        if(batterijStatusElement) batterijStatusElement.style.display = 'none';
+        if (batterijStatusElement) batterijStatusElement.style.display = 'none';
         return;
     }
     try {
@@ -622,7 +623,7 @@ async function updateBatteryStatus() {
         batterijStatusElement.textContent = `${Math.floor(battery.level * 100)}%`;
     } catch (error) {
         console.error('Error getting battery status:', error);
-        if(batterijStatusElement) batterijStatusElement.style.display = 'none';
+        if (batterijStatusElement) batterijStatusElement.style.display = 'none';
     }
 }
 
@@ -677,7 +678,7 @@ function setupEventListeners() {
     grootteBatterijInput.addEventListener('input', (e) => applyAndSaveSetting('grootteBatterij', parseFloat(e.target.value), batterijStatusElement, 'fontSize'));
     paddingOnderBatterijInput.addEventListener('input', (e) => applyAndSaveSetting('paddingOnderBatterij', parseInt(e.target.value), batterijStatusElement, 'paddingBottom'));
     breedteBatterijInput.addEventListener('input', (e) => applyAndSaveSetting('breedteBatterij', parseFloat(e.target.value), batterijStatusElement, 'transform'));
-    
+
     if (notepadArea) {
         notepadArea.addEventListener('input', saveNotepadContent);
     }
@@ -690,7 +691,7 @@ function setupEventListeners() {
     kleurBatterijInput.addEventListener('input', (e) => applyAndSaveSetting('kleurBatterij', e.target.value, batterijStatusElement, 'color'));
     if (kleurNotepadInput) kleurNotepadInput.addEventListener('input', (e) => applyAndSaveSetting('kleurNotepad', e.target.value, notepadArea, 'color'));
     achtergrondKleurInput.addEventListener('input', (e) => applyAndSaveSetting('achtergrondKleur', e.target.value, document.body, 'backgroundColor'));
-    
+
     achtergrondElementenKleurInput.addEventListener('input', async (e) => {
         const val = e.target.value;
         if (instellingenPaneel) instellingenPaneel.style.backgroundColor = val;
@@ -705,7 +706,7 @@ function setupEventListeners() {
             });
         });
     }
-    
+
     // System theme change listener
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFlatpickrTheme);
 
