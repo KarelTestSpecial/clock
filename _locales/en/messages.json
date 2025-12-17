@@ -151,5 +151,14 @@
     },
     "toggleBatteryText": {
         "message": "Toggle Battery"
+    },
+    "iconColorLabel": {
+        "message": "Toolbar Icon Color"
+    },
+    "notepadColorLabel": {
+        "message": "Notepad Text Color"
+    },
+    "stopAlarmText": {
+        "message": "STOP"
     }
 }

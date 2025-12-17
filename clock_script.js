@@ -148,7 +148,7 @@ function applyTranslations() {
     toggleNotepadKnop.textContent = chrome.i18n.getMessage('toggleNotepadText');
     toonInstellingenKnop.textContent = chrome.i18n.getMessage('toggleSettingsText');
     startScreensaverKnop.textContent = chrome.i18n.getMessage('startScreensaverText');
-    stopAlarmKnop.textContent = 'STOP';
+    stopAlarmKnop.textContent = chrome.i18n.getMessage('stopAlarmText');
     document.getElementById('settingsTitleText').textContent = chrome.i18n.getMessage('settingsTitleText');
     document.getElementById('timeLabel').textContent = chrome.i18n.getMessage('timeLabel');
     document.getElementById('lblFontTijd').textContent = chrome.i18n.getMessage('timeFontLabel');
