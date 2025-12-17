@@ -1,11 +1,11 @@
 
 // Globale DOM Element Referenties (na DOMContentLoaded)
-let tijdElement, datumElement, toggleSecondenKnop, toonInstellingenKnop, instellingenPaneel, batterijStatusElement, toggleBatterijKnop, toggleDagNaamKnop, toggleJaarKnop;
+let tijdElement, datumElement, toggleSecondenKnop, toonInstellingenKnop, instellingenPaneel, batterijStatusElement, toggleBatterijKnop, toggleDagNaamKnop, toggleJaarKnop, stopAlarmKnop;
 let bewaarFavorietKnop, herstelStandaardKnop, herstelFavorietKnop;
 let fontTijdInput, grootteTijdInput, weergaveGrootteTijd, kleurTijdInput, paddingOnderTijdInput, weergavePaddingOnderTijd, paddingBovenTijdInput, weergavePaddingBovenTijd;
 let fontDatumInput, grootteDatumInput, weergaveGrootteDatum, kleurDatumInput, paddingOnderDatumInput, weergavePaddingOnderDatum;
 let fontBatterijInput, kleurBatterijInput, grootteBatterijInput, weergaveGrootteBatterij, breedteBatterijInput, weergaveBreedteBatterij, paddingOnderBatterijInput, weergavePaddingOnderBatterij;
-let achtergrondKleurInput, achtergrondElementenKleurInput, klokContainer, notepadContainer, notepadArea, toggleNotepadKnop;
+let achtergrondKleurInput, achtergrondElementenKleurInput, klokContainer, notepadContainer, notepadArea, toggleNotepadKnop, iconColorPicker;
 let notepadTextAlignSelect, fontNotepadInput, grootteNotepadInput, weergaveGrootteNotepad;
 let toggleDatumKnop, startScreensaverKnop, statusMessageElement, klokPositieSelect;
 
@@ -78,6 +78,7 @@ function initializeDOMReferences() {
     toggleBatterijKnop = document.getElementById('toggle-batterij');
     toonInstellingenKnop = document.getElementById('toon-instellingen');
     startScreensaverKnop = document.getElementById('start-screensaver');
+    stopAlarmKnop = document.getElementById('stop-alarm');
     bewaarFavorietKnop = document.getElementById('bewaar-favoriet');
     herstelStandaardKnop = document.getElementById('herstel-standaard');
     herstelFavorietKnop = document.getElementById('herstel-favoriet');
@@ -114,6 +115,7 @@ function initializeDOMReferences() {
     fontNotepadInput = document.getElementById('font-notepad');
     grootteNotepadInput = document.getElementById('grootte-notepad');
     weergaveGrootteNotepad = document.getElementById('weergave-grootte-notepad');
+    iconColorPicker = document.getElementById('icon-color-picker');
 
     // Alarmen
     for (let i = 1; i <= 2; i++) {
@@ -144,6 +146,7 @@ function applyTranslations() {
     toggleNotepadKnop.textContent = chrome.i18n.getMessage('toggleNotepadText');
     toonInstellingenKnop.textContent = chrome.i18n.getMessage('toggleSettingsText');
     startScreensaverKnop.textContent = chrome.i18n.getMessage('startScreensaverText');
+    stopAlarmKnop.textContent = chrome.i18n.getMessage('stopAlarmText');
     document.getElementById('settingsTitleText').textContent = chrome.i18n.getMessage('settingsTitleText');
     document.getElementById('timeLabel').textContent = chrome.i18n.getMessage('timeLabel');
     document.getElementById('lblFontTijd').textContent = chrome.i18n.getMessage('timeFontLabel');
@@ -173,6 +176,7 @@ function applyTranslations() {
     document.getElementById('optTextAlignLeft').textContent = chrome.i18n.getMessage('textAlignLeft');
     document.getElementById('optTextAlignCenter').textContent = chrome.i18n.getMessage('textAlignCenter');
     document.getElementById('optTextAlignRight').textContent = chrome.i18n.getMessage('textAlignRight');
+    document.getElementById('lblIconColor').textContent = chrome.i18n.getMessage('iconColorLabel');
     bewaarFavorietKnop.textContent = chrome.i18n.getMessage('saveFavoritesText');
     herstelStandaardKnop.textContent = chrome.i18n.getMessage('defaultSettingsText');
     herstelFavorietKnop.textContent = chrome.i18n.getMessage('restoreFavoritesText');
@@ -269,7 +273,10 @@ function applyAllSettings(settings) {
     if (achtergrondKleurInput) achtergrondKleurInput.value = settings.achtergrondKleur;
     if (achtergrondElementenKleurInput) achtergrondElementenKleurInput.value = settings.achtergrondElementenKleur;
     if (instellingenPaneel) instellingenPaneel.style.backgroundColor = settings.achtergrondElementenKleur;
-    if (notepadArea) notepadArea.style.backgroundColor = settings.achtergrondElementenKleur;
+    if (notepadArea) {
+        notepadArea.style.backgroundColor = settings.achtergrondElementenKleur;
+        notepadArea.style.color = settings.kleurDatum;
+    }
     if (klokPositieSelect) klokPositieSelect.value = settings.klokPositie;
 }
 
@@ -295,6 +302,13 @@ function applyDatumVisibility(isVisible) {
 async function laadInstellingen() {
     const opgeslagenInstellingen = await chrome.storage.local.get(standaardInstellingen);
     applyAllSettings(opgeslagenInstellingen);
+    if (iconColorPicker) {
+        chrome.storage.local.get('iconColor', (result) => {
+            if (result.iconColor) {
+                iconColorPicker.value = result.iconColor;
+            }
+        });
+    }
     applyDatumVisibility(opgeslagenInstellingen.isDatumVisible);
     applyBatteryVisibility(opgeslagenInstellingen.toonBatterij);
     applyNotepadSettings(opgeslagenInstellingen);
@@ -480,6 +494,9 @@ async function bewaarFavorieteInstellingen() {
 async function herstelStandaardInstellingen() {
     applyAllSettings(standaardInstellingen);
     applyDatumVisibility(standaardInstellingen.isDatumVisible);
+    if (notepadArea) {
+        notepadArea.style.color = standaardInstellingen.kleurDatum;
+    }
     applyNotepadSettings({ ...standaardInstellingen, notepadContent: notepadArea.value });
     if (notepadArea) notepadArea.style.height = '';
     const instellingenOmOpTeSlaan = { ...standaardInstellingen };
@@ -642,6 +659,11 @@ function setupEventListeners() {
     herstelFavorietKnop.addEventListener('click', herstelFavorieteInstellingen);
     toggleNotepadKnop.addEventListener('click', toggleUserPreferenceNotepad);
     startScreensaverKnop.addEventListener('click', toggleScreensaver);
+    stopAlarmKnop.addEventListener('click', () => {
+        chrome.runtime.sendMessage({ action: 'stop-alarm-sound' });
+        stopAlarmKnop.classList.add('hidden');
+        document.body.classList.remove('alarm-active');
+    });
     tijdElement.addEventListener('click', toggleScreensaver);
     datumElement.addEventListener('click', toggleScreensaver);
 
@@ -658,6 +680,12 @@ function setupEventListeners() {
     grootteBatterijInput.addEventListener('input', (e) => applyAndSaveSetting('grootteBatterij', parseFloat(e.target.value), batterijStatusElement, 'fontSize'));
     paddingOnderBatterijInput.addEventListener('input', (e) => applyAndSaveSetting('paddingOnderBatterij', parseInt(e.target.value), batterijStatusElement, 'paddingBottom'));
     breedteBatterijInput.addEventListener('input', (e) => applyAndSaveSetting('breedteBatterij', parseFloat(e.target.value), batterijStatusElement, 'transform'));
+    kleurDatumInput.addEventListener('input', (e) => {
+        applyAndSaveSetting('kleurDatum', e.target.value, datumElement, 'color');
+        if (notepadArea) {
+            notepadArea.style.color = e.target.value;
+        }
+    });
     
     if (notepadArea) {
         notepadArea.addEventListener('input', saveNotepadContent);
@@ -683,6 +711,12 @@ function setupEventListeners() {
         if (notepadArea) notepadArea.style.backgroundColor = val;
         await chrome.storage.local.set({ achtergrondElementenKleur: val });
     });
+
+    if (iconColorPicker) {
+        iconColorPicker.addEventListener('input', (e) => {
+            chrome.storage.local.set({ iconColor: e.target.value });
+        });
+    }
     
     // System theme change listener
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFlatpickrTheme);
@@ -713,6 +747,7 @@ async function initializeClock() {
     updateKlok();
     setupEventListeners();
     setInterval(updateKlok, 1000);
+    document.dispatchEvent(new CustomEvent('clockInitialized'));
 }
 
 
@@ -721,8 +756,15 @@ document.addEventListener('DOMContentLoaded', initializeClock);
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'alarm-triggered') {
         document.body.classList.add('alarm-active');
+        if (stopAlarmKnop) {
+            stopAlarmKnop.classList.remove('hidden');
+        }
+        const alarmDurationInMs = (request.duration || 3) * 1000;
         setTimeout(() => {
             document.body.classList.remove('alarm-active');
-        }, 3000);
+            if (stopAlarmKnop) {
+                stopAlarmKnop.classList.add('hidden');
+            }
+        }, alarmDurationInMs);
     }
 });

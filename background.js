@@ -2,6 +2,7 @@ const OFFSCREEN_DOCUMENT_PATH = '/offscreen.html';
 
 // --- Dynamic Icon ---
 async function drawTimeIcon() {
+    const { iconColor } = await chrome.storage.local.get({ iconColor: '#FFFFFF' });
     const canvas = new OffscreenCanvas(128, 128);
     const ctx = canvas.getContext('2d');
 
@@ -32,7 +33,7 @@ async function drawTimeIcon() {
         centerX + Math.cos(hourAngle) * (radius * 0.6),
         centerY + Math.sin(hourAngle) * (radius * 0.6)
     );
-    ctx.strokeStyle = '#FFFFFF';
+    ctx.strokeStyle = iconColor;
     ctx.lineWidth = 10;
     ctx.lineCap = 'round';
     ctx.stroke();
@@ -44,7 +45,7 @@ async function drawTimeIcon() {
         centerX + Math.cos(minuteAngle) * (radius * 0.85),
         centerY + Math.sin(minuteAngle) * (radius * 0.85)
     );
-    ctx.strokeStyle = '#FFFFFF';
+    ctx.strokeStyle = iconColor;
     ctx.lineWidth = 6;
     ctx.lineCap = 'round';
     ctx.stroke();
@@ -52,7 +53,7 @@ async function drawTimeIcon() {
     // Center Dot
     ctx.beginPath();
     ctx.arc(centerX, centerY, 4, 0, 2 * Math.PI);
-    ctx.fillStyle = '#FFFFFF';
+    ctx.fillStyle = iconColor;
     ctx.fill();
 
     const imageData = ctx.getImageData(0, 0, 128, 128);
@@ -133,6 +134,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     } else if (request.action === 'clear-alarm') {
         chrome.alarms.clear(request.alarmName);
         sendResponse({ status: "Alarm cleared" });
+    } else if (request.action === 'stop-alarm-sound') {
+        stopSoundOffscreen();
     }
     return false;
 });
@@ -145,6 +148,9 @@ async function triggerAlarmEffects(alarm) {
     const alarmName = alarm.name;
 
     // 1. Bring clock window to front and show visual indicator
+    const alarmSettingsKey = alarmName === 'alarm-1' ? 'alarm1Settings' : 'alarm2Settings';
+    const { [alarmSettingsKey]: settings } = await chrome.storage.local.get(alarmSettingsKey);
+
     let windowToFocus = await findClockWindow();
     if (!windowToFocus) {
         windowToFocus = await createClockWindow();
@@ -154,7 +160,10 @@ async function triggerAlarmEffects(alarm) {
         const tabs = await chrome.tabs.query({ windowId: windowToFocus.id });
         const clockTab = tabs.find(tab => tab.url.includes("clock_window.html"));
         if (clockTab) {
-            chrome.tabs.sendMessage(clockTab.id, { action: 'alarm-triggered' });
+            chrome.tabs.sendMessage(clockTab.id, {
+                action: 'alarm-triggered',
+                duration: settings ? settings.duration : 5
+            });
         }
     }
 
@@ -170,6 +179,15 @@ async function triggerAlarmEffects(alarm) {
 
 // --- Offscreen Document Audio Playback ---
 let creatingOffscreenDocument = null;
+
+async function stopSoundOffscreen() {
+    if (await hasOffscreenDocument(OFFSCREEN_DOCUMENT_PATH)) {
+        chrome.runtime.sendMessage({
+            target: 'offscreen',
+            action: 'stop-alarm-sound'
+        });
+    }
+}
 
 async function hasOffscreenDocument(path) {
     const offscreenUrl = chrome.runtime.getURL(path);

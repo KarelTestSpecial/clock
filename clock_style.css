@@ -258,3 +258,14 @@ body.alarm-active {
 #herstel-standaard {
     background-color: #888888; /* Duidelijk lichter grijs voor dark mode */
 }
+
+#stop-alarm {
+    background-color: #c00;
+    color: white;
+}
+#stop-alarm:hover {
+    background-color: #e00;
+}
+.hidden {
+    display: none !important;
+}
