@@ -168,9 +168,6 @@ async function triggerAlarmEffects(alarm) {
     }
 
     // 2. Play sound via offscreen document
-    const alarmSettingsKey = alarmName === 'alarm-1' ? 'alarm1Settings' : 'alarm2Settings';
-    const { [alarmSettingsKey]: settings } = await chrome.storage.local.get(alarmSettingsKey);
-
     if (settings && settings.enabled) {
         await playSoundOffscreen(settings.sound, settings.duration);
     }
