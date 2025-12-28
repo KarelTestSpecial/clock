@@ -1,0 +1,164 @@
+{
+    "extName": {
+        "message": "Zeer Praktische Klok & Notitieboekje"
+    },
+    "extDescription": {
+        "message": "Een aanpasbare digitale klok die altijd bovenaan blijft ...of niet."
+    },
+    "htmlPageTitle": {
+        "message": "Klok Tab"
+    },
+    "toggleSecondsText": {
+        "message": "Seconden Aan/Uit"
+    },
+    "toggleDateText": {
+        "message": "Datum Aan/Uit"
+    },
+    "toggleDayOfWeekText": {
+        "message": "Dag Aan/Uit"
+    },
+    "toggleYearText": {
+        "message": "Jaar Aan/Uit"
+    },
+    "toggleNotepadText": {
+        "message": "Kladblok Aan/Uit"
+    },
+    "toggleSettingsText": {
+        "message": "Instellingen"
+    },
+    "startScreensaverText": {
+        "message": "Start Schermbeveiliging"
+    },
+    "settingsTitleText": {
+        "message": "Instellingen"
+    },
+    "timeFontLabel": {
+        "message": "Tijd Lettertype"
+    },
+    "timeSizeLabelText": {
+        "message": "Tijd Grootte"
+    },
+    "timeColorLabel": {
+        "message": "Tijd Kleur"
+    },
+    "timePaddingLabel": {
+        "message": "Opvulling Onder Tijd"
+    },
+    "timePaddingAboveLabel": {
+        "message": "Opvulling Boven Tijd"
+    },
+    "dateFontLabel": {
+        "message": "Datum Lettertype"
+    },
+    "dateSizeLabelText": {
+        "message": "Datum Grootte"
+    },
+    "dateColorLabel": {
+        "message": "Datum Kleur"
+    },
+    "datePaddingLabel": {
+        "message": "Opvulling Onder Datum"
+    },
+    "batteryFontLabel": {
+        "message": "Batterij Lettertype"
+    },
+    "batteryColorLabel": {
+        "message": "Batterij Kleur"
+    },
+    "batterySizeLabelText": {
+        "message": "Batterij Grootte"
+    },
+    "batteryWidthLabelText": {
+        "message": "Batterij Breedte"
+    },
+    "batteryPaddingLabel": {
+        "message": "Opvulling Onder Batterij"
+    },
+    "backgroundElementsColorLabel": {
+        "message": "Achtergrond Elementen"
+    },
+    "backgroundColorLabel": {
+        "message": "Achtergrondkleur"
+    },
+    "notepadTextAlignLabel": {
+        "message": "Kladblok Tekst Uitlijning"
+    },
+    "notepadFontLabel": {
+        "message": "Kladblok Lettertype"
+    },
+    "notepadSizeLabelText": {
+        "message": "Kladblok Grootte"
+    },
+    "textAlignLeft": {
+        "message": "Links"
+    },
+    "textAlignCenter": {
+        "message": "Midden"
+    },
+    "textAlignRight": {
+        "message": "Rechts"
+    },
+    "saveFavoritesText": {
+        "message": "Opslaan als Favoriet"
+    },
+    "defaultSettingsText": {
+        "message": "Standaard Herstellen"
+    },
+    "restoreFavoritesText": {
+        "message": "Favoriet Herstellen"
+    },
+    "notepadPlaceholder": {
+        "message": "Uw notities hier..."
+    },
+    "positionLabel": {
+        "message": "Klok Positie"
+    },
+    "posTopLeft": {
+        "message": "Linksboven"
+    },
+    "posTopCenter": {
+        "message": "Middenboven"
+    },
+    "posTopRight": {
+        "message": "Rechtsboven"
+    },
+    "posCenterCenter": {
+        "message": "Midden"
+    },
+    "posBottomLeft": {
+        "message": "Linksonder"
+    },
+    "posBottomCenter": {
+        "message": "Middenonder"
+    },
+    "posBottomRight": {
+        "message": "Rechtsonder"
+    },
+    "alertFavoriteSaved": {
+        "message": "Favoriete instellingen opgeslagen."
+    },
+    "alertFavoriteRestored": {
+        "message": "Favoriete instellingen hersteld."
+    },
+    "alertNoFavoriteFound": {
+        "message": "Geen favoriete instellingen gevonden."
+    },
+    "tooltipOpenClock": {
+        "message": "Open Klok"
+    },
+    "dateLocale": {
+        "message": "nl-NL"
+    },
+    "toggleBatteryText": {
+        "message": "Batterij Aan/Uit"
+    },
+    "iconColorLabel": {
+        "message": "Werkbalk Icoonkleur"
+    },
+    "notepadColorLabel": {
+        "message": "Kladblok Tekstkleur"
+    },
+    "stopAlarmText": {
+        "message": "STOP"
+    }
+}

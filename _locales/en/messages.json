@@ -1,6 +1,6 @@
 {
     "extName": {
-        "message": "Very Practical Clock"
+        "message": "Very Practical Clock & Notepad"
     },
     "extDescription": {
         "message": "A customizable digital clock that always stays on top ...or not."
@@ -151,5 +151,14 @@
     },
     "toggleBatteryText": {
         "message": "Toggle Battery"
+    },
+    "iconColorLabel": {
+        "message": "Toolbar Icon Color"
+    },
+    "notepadColorLabel": {
+        "message": "Notepad Text Color"
+    },
+    "stopAlarmText": {
+        "message": "STOP"
     }
 }

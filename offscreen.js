@@ -23,6 +23,13 @@ chrome.runtime.onMessage.addListener((message) => {
       audioPlayer.src = '';
       stopTimer = null;
     }, message.duration * 1000);
+  } else if (message.action === 'stop-alarm-sound') {
+    if (stopTimer) {
+      clearTimeout(stopTimer);
+      stopTimer = null;
+    }
+    audioPlayer.pause();
+    audioPlayer.src = '';
   }
   return false;
 });

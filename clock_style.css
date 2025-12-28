@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     height: 100%;
     width: 100%;
     margin: 0;
@@ -13,7 +14,8 @@ body {
     overflow: auto;
     scrollbar-gutter: stable;
     display: grid;
-    place-content: flex-start center; /* Default position: top-center */
+    place-content: flex-start center;
+    /* Default position: top-center */
     width: 100%;
     height: 100%;
     background-color: #000000;
@@ -22,30 +24,81 @@ body {
     font-family: Arial, sans-serif;
 }
 
-body.position-top-left { place-content: flex-start flex-start; }
-body.position-top-center { place-content: flex-start center; }
-body.position-top-right { place-content: flex-start flex-end; }
-body.position-center-center { place-content: center center; }
-body.position-bottom-left { place-content: flex-end flex-start; }
-body.position-bottom-center { place-content: flex-end center; }
-body.position-bottom-right { place-content: flex-end flex-end; }
+body.position-top-left {
+    place-content: flex-start flex-start;
+}
+
+body.position-top-center {
+    place-content: flex-start center;
+}
+
+body.position-top-right {
+    place-content: flex-start flex-end;
+}
+
+body.position-center-center {
+    place-content: center center;
+}
+
+body.position-bottom-left {
+    place-content: flex-end flex-start;
+}
+
+body.position-bottom-center {
+    place-content: flex-end center;
+}
+
+body.position-bottom-right {
+    place-content: flex-end flex-end;
+}
 
 #klok-container {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center the clock elements internally */
-    min-width: 300px; /* Prevent from becoming too narrow */
+    align-items: center;
+    /* Center the clock elements internally */
+    min-width: 300px;
+    /* Prevent from becoming too narrow */
     box-sizing: border-box;
-    padding: 1px;
+    padding: 10px;
+    /* Default: Height is auto (content-based) to respect vertical centering */
 }
 
-#tijd, #datum, #batterij-status {
+body.notepad-open #klok-container {
+    height: 100vh;
+    /* Force full height when notepad is open */
+    width: 100%;
+    /* Force full width when notepad is open */
+}
+
+/* Ensure body doesn't fight the height when notepad is open */
+/* Ensure body doesn't fight the height when notepad is open */
+body.notepad-open {
+    display: block;
+    /* Disable Grid layout to allow full width expansion */
+    place-content: unset;
+    /* Remove grid alignment */
+    overflow: hidden;
+    /* Prevent double scrollbars if possible */
+}
+
+#tijd,
+#datum,
+#batterij-status {
     white-space: nowrap;
     line-height: 1;
     text-align: inherit;
 }
-#tijd { font-size: 3em; color: limegreen; }
-#datum { font-size: 1em; color: lightgray; }
+
+#tijd {
+    font-size: 3em;
+    color: limegreen;
+}
+
+#datum {
+    font-size: 1em;
+    color: lightgray;
+}
 
 #notepad-container {
     width: 100%;
@@ -54,24 +107,30 @@ body.position-bottom-right { place-content: flex-end flex-end; }
     display: flex;
     flex-direction: column;
     align-items: inherit;
+    flex-grow: 1;
 }
 
 #notepad-area {
     width: 100%;
-    min-height: 40px;
+    height: 100%;
     padding: 5px;
     font-size: 0.9em;
     border: 1px solid #555;
     background-color: #282828;
     color: #eee;
-    resize: both; /* Allow resizing in both directions */
+    resize: none;
+    /* Disable manual resizing */
+    box-sizing: border-box;
 }
 
-#notepad-container.hidden { display: none !important; }
+#notepad-container.hidden {
+    display: none !important;
+}
 
 #knoppen-wrapper {
     display: flex;
-    justify-content: center; /* Center buttons within the wrapper */
+    justify-content: center;
+    /* Center buttons within the wrapper */
     gap: 10px;
     width: 100%;
     margin-top: 8px;
@@ -98,7 +157,9 @@ button {
     white-space: nowrap;
 }
 
-button:hover { background-color: #555; }
+button:hover {
+    background-color: #555;
+}
 
 .instellingen-paneel {
     margin-top: 10px;
@@ -106,19 +167,24 @@ button:hover { background-color: #555; }
     border: 1px solid #444;
     background-color: #282828;
     color: #eee;
-    width: auto; /* Width determined by content */
+    width: auto;
+    /* Width determined by content */
     box-sizing: border-box;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 10px;
 }
 
-.instellingen-paneel.hidden { display: none !important; }
+.instellingen-paneel.hidden {
+    display: none !important;
+}
+
 .instellingen-paneel h3 {
     margin: 0 0 10px 0;
     font-size: 1.1em;
     text-align: center;
-    grid-column: 1 / -1; /* Make title span all columns */
+    grid-column: 1 / -1;
+    /* Make title span all columns */
 }
 
 .instelling-groep {
@@ -131,10 +197,20 @@ button:hover { background-color: #555; }
     flex: 1;
 }
 
-.instelling-groep h4 { margin: 0 0 8px 0; font-size: 1em; text-align: center; }
+.instelling-groep h4 {
+    margin: 0 0 8px 0;
+    font-size: 1em;
+    text-align: center;
+}
 
-.instellingen-paneel label { display: block; margin-bottom: 3px; font-size: 0.9em; }
-.instellingen-paneel input, .instellingen-paneel select {
+.instellingen-paneel label {
+    display: block;
+    margin-bottom: 3px;
+    font-size: 0.9em;
+}
+
+.instellingen-paneel input,
+.instellingen-paneel select {
     width: 100%;
     padding: 5px;
     box-sizing: border-box;
@@ -144,7 +220,10 @@ button:hover { background-color: #555; }
     font-size: 1em;
     margin-bottom: 8px;
 }
-.instellingen-paneel input[type="range"] { padding: 0; }
+
+.instellingen-paneel input[type="range"] {
+    padding: 0;
+}
 
 .instellingen-paneel input.flatpickr-input {
     cursor: pointer;
@@ -153,18 +232,24 @@ button:hover { background-color: #555; }
 
 .knoppen-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 columns */
-    grid-template-rows: repeat(4, 1fr);   /* Make rows fill space evenly */
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 columns */
+    grid-template-rows: repeat(4, 1fr);
+    /* Make rows fill space evenly */
     gap: 6px;
-    grid-column: span 2; /* Span across two grid columns */
+    grid-column: span 2;
+    /* Span across two grid columns */
 }
 
 .knoppen-container button {
     width: 100%;
-    padding: 6px 8px; /* Consistent padding for all buttons */
+    padding: 6px 8px;
+    /* Consistent padding for all buttons */
     font-size: 0.9em;
-    height: 100%; /* Ensure button fills its grid cell height */
-    display: flex; /* Use flex to center text vertically */
+    height: 100%;
+    /* Ensure button fills its grid cell height */
+    display: flex;
+    /* Use flex to center text vertically */
     align-items: center;
     justify-content: center;
     text-align: center;
@@ -186,46 +271,64 @@ button:hover { background-color: #555; }
     transition: opacity 0.4s ease-in-out;
 }
 
-#status-message.visible { opacity: 1; visibility: visible; }
-
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 40px;
-  height: 22px;
-  align-self: center;
+#status-message.visible {
+    opacity: 1;
+    visibility: visible;
 }
 
-.switch input { display: none; }
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 22px;
+    align-self: center;
+}
+
+.switch input {
+    display: none;
+}
 
 .slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #555;
-  transition: .4s;
-  border-radius: 22px;
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #555;
+    transition: .4s;
+    border-radius: 22px;
 }
 
 .slider:before {
-  position: absolute;
-  content: "";
-  height: 16px;
-  width: 16px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: .4s;
-  border-radius: 50%;
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
 }
 
-input:checked + .slider { background-color: #39FF14; }
-input:checked + .slider:before { transform: translateX(18px); }
+input:checked+.slider {
+    background-color: #39FF14;
+}
+
+input:checked+.slider:before {
+    transform: translateX(18px);
+}
 
 /* --- Screensaver --- */
 @keyframes glide {
-    0% { transform: translate(var(--start-x), var(--start-y)); }
-    100% { transform: translate(var(--end-x), var(--end-y)); }
+    0% {
+        transform: translate(var(--start-x), var(--start-y));
+    }
+
+    100% {
+        transform: translate(var(--end-x), var(--end-y));
+    }
 }
 
 body.screensaver-active {
@@ -256,5 +359,19 @@ body.alarm-active {
 #bewaar-favoriet,
 #herstel-favoriet,
 #herstel-standaard {
-    background-color: #888888; /* Duidelijk lichter grijs voor dark mode */
+    background-color: #888888;
+    /* Duidelijk lichter grijs voor dark mode */
+}
+
+#stop-alarm {
+    background-color: #c00;
+    color: white;
+}
+
+#stop-alarm:hover {
+    background-color: #e00;
+}
+
+.hidden {
+    display: none !important;
 }
