@@ -38,14 +38,18 @@ async function drawTimeIcon() {
     ctx.stroke();
 
     // Draw Minute Hand
+    const minuteHandLineWidth = 6;
+    const minuteHandCapRadius = minuteHandLineWidth / 2;
+    const distanceToEdge = Math.min(centerX / Math.abs(Math.cos(minuteAngle)), centerY / Math.abs(Math.sin(minuteAngle)));
+    const minuteHandLength = distanceToEdge - minuteHandCapRadius;
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
     ctx.lineTo(
-        centerX + Math.cos(minuteAngle) * (radius * 0.85),
-        centerY + Math.sin(minuteAngle) * (radius * 0.85)
+        centerX + Math.cos(minuteAngle) * minuteHandLength,
+        centerY + Math.sin(minuteAngle) * minuteHandLength
     );
     ctx.strokeStyle = '#FFFFFF';
-    ctx.lineWidth = 6;
+    ctx.lineWidth = minuteHandLineWidth;
     ctx.lineCap = 'round';
     ctx.stroke();
 
