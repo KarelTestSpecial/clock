@@ -10,12 +10,13 @@ let notepadTextAlignSelect, fontNotepadInput, grootteNotepadInput, weergaveGroot
 let toggleDatumKnop, startScreensaverKnop, statusMessageElement, klokPositieSelect;
 
 // Globale status- en timer-variabelen
-let toonSeconden, toonBatterij;
+let toonSeconden, toonBatterij, showDayOfWeek, showYear, currentLocale;
 let isScreensaverActive = false;
 let screensaverAnimationTimeout = null;
 let statusMessageTimeoutId = null;
 let windowResizeTimer = null;
 let currentAlarmAudio = null;
+let clockInterval = null;
 
 // Standaardinstellingen
 const standaardInstellingen = {
@@ -138,6 +139,7 @@ function initializeDOMReferences() {
 }
 
 function applyTranslations() {
+    currentLocale = chrome.i18n.getMessage('dateLocale');
     document.documentElement.lang = chrome.i18n.getUILanguage().split('-')[0];
     document.getElementById('htmlPageTitle').textContent = chrome.i18n.getMessage('htmlPageTitle');
     toggleSecondenKnop.textContent = chrome.i18n.getMessage('toggleSecondsText');
@@ -229,6 +231,8 @@ function applyAllSettings(settings) {
     updateFlatpickrTheme(); // Update Flatpickr theme based on the applied background color
     toonSeconden = settings.toonSeconden;
     toonBatterij = settings.toonBatterij;
+    showDayOfWeek = settings.showDayOfWeek;
+    showYear = settings.showYear;
 
     if (tijdElement) {
         tijdElement.style.fontFamily = settings.fontTijd;
@@ -388,6 +392,10 @@ async function applyAndSaveSetting(key, value, element, styleProperty) {
 
 
 async function updateKlok() {
+    if (!chrome.runtime?.id) {
+        if (clockInterval) clearInterval(clockInterval);
+        return;
+    }
     if (!tijdElement || !datumElement) return;
     if (toonBatterij) updateBatteryStatus();
     const nu = new Date();
@@ -398,8 +406,6 @@ async function updateKlok() {
         tijdString += `:${nu.getSeconds().toString().padStart(2, '0')}`;
     }
     tijdElement.textContent = tijdString;
-    const currentLocale = chrome.i18n.getMessage('dateLocale');
-    const { showDayOfWeek, showYear } = await chrome.storage.local.get({ showDayOfWeek: standaardInstellingen.showDayOfWeek, showYear: standaardInstellingen.showYear });
     const optiesDatum = { month: 'long', day: 'numeric' };
     if (showDayOfWeek) {
         optiesDatum.weekday = 'long';
@@ -407,10 +413,11 @@ async function updateKlok() {
     if (showYear) {
         optiesDatum.year = 'numeric';
     }
-    datumElement.textContent = nu.toLocaleDateString(currentLocale, optiesDatum);
+    datumElement.textContent = nu.toLocaleDateString(currentLocale || 'en-US', optiesDatum);
 }
 
 async function updateActualNotepadVisibility() {
+    if (!chrome.runtime?.id) return;
     let { isNotepadVisible } = await chrome.storage.local.get({ isNotepadVisible: standaardInstellingen.isNotepadVisible });
     if (notepadContainer) {
         notepadContainer.classList.toggle('hidden', !isNotepadVisible);
@@ -419,6 +426,7 @@ async function updateActualNotepadVisibility() {
 }
 
 async function toggleUserPreferenceNotepad() {
+    if (!chrome.runtime?.id) return;
     let { isNotepadVisible } = await chrome.storage.local.get('isNotepadVisible');
     const nieuweVoorkeur = isNotepadVisible === undefined ? !standaardInstellingen.isNotepadVisible : !isNotepadVisible;
     await chrome.storage.local.set({ isNotepadVisible: nieuweVoorkeur });
@@ -426,9 +434,9 @@ async function toggleUserPreferenceNotepad() {
 }
 
 async function toggleDayOfWeek() {
-    let { showDayOfWeek } = await chrome.storage.local.get('showDayOfWeek');
-    const newShowDayOfWeek = showDayOfWeek === undefined ? !standaardInstellingen.showDayOfWeek : !showDayOfWeek;
-    await chrome.storage.local.set({ showDayOfWeek: newShowDayOfWeek });
+    let { showDayOfWeek: currentShowDayOfWeek } = await chrome.storage.local.get('showDayOfWeek');
+    showDayOfWeek = currentShowDayOfWeek === undefined ? !standaardInstellingen.showDayOfWeek : !currentShowDayOfWeek;
+    await chrome.storage.local.set({ showDayOfWeek: showDayOfWeek });
     await updateKlok();
 }
 
@@ -648,9 +656,9 @@ function setupEventListeners() {
     });
     toggleDagNaamKnop.addEventListener('click', toggleDayOfWeek);
     toggleJaarKnop.addEventListener('click', async () => {
-        let { showYear } = await chrome.storage.local.get('showYear');
-        const newShowYear = showYear === undefined ? !standaardInstellingen.showYear : !showYear;
-        await chrome.storage.local.set({ showYear: newShowYear });
+        let { showYear: currentShowYear } = await chrome.storage.local.get('showYear');
+        showYear = currentShowYear === undefined ? !standaardInstellingen.showYear : !currentShowYear;
+        await chrome.storage.local.set({ showYear: showYear });
         await updateKlok();
     });
     toonInstellingenKnop.addEventListener('click', toggleInstellingenPaneel);
@@ -750,6 +758,7 @@ function setupEventListeners() {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFlatpickrTheme);
 
     window.addEventListener('resize', async () => {
+        if (!chrome.runtime?.id) return;
         if (isScreensaverActive) {
             try {
                 const currentWindow = await chrome.windows.getCurrent();
@@ -758,8 +767,9 @@ function setupEventListeners() {
         }
         clearTimeout(windowResizeTimer);
         windowResizeTimer = setTimeout(() => {
+            if (!chrome.runtime?.id) return;
             chrome.windows.getCurrent(currentWindow => {
-                if (currentWindow.state === 'normal') {
+                if (currentWindow && currentWindow.state === 'normal') {
                     chrome.storage.local.set({ windowWidth: window.outerWidth, windowHeight: window.outerHeight });
                 }
             });
@@ -774,7 +784,7 @@ async function initializeClock() {
     document.body.style.visibility = 'visible';
     updateKlok();
     setupEventListeners();
-    setInterval(updateKlok, 1000);
+    clockInterval = setInterval(updateKlok, 1000);
     document.dispatchEvent(new CustomEvent('clockInitialized'));
 }
 
