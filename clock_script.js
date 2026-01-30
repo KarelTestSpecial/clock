@@ -1,7 +1,7 @@
 
 // Globale DOM Element Referenties (na DOMContentLoaded)
 let tijdElement, datumElement, toggleSecondenKnop, toonInstellingenKnop, instellingenPaneel, batterijStatusElement, toggleBatterijKnop, toggleDagNaamKnop, toggleJaarKnop, stopAlarmKnop;
-let bewaarFavorietKnop, herstelStandaardKnop, herstelFavorietKnop;
+let bewaarFavorietKnop, herstelStandaardKnop, herstelFavorietKnop, downloadNotepadKnop;
 let fontTijdInput, grootteTijdInput, weergaveGrootteTijd, kleurTijdInput, paddingOnderTijdInput, weergavePaddingOnderTijd, paddingBovenTijdInput, weergavePaddingBovenTijd;
 let fontDatumInput, grootteDatumInput, weergaveGrootteDatum, kleurDatumInput, paddingOnderDatumInput, weergavePaddingOnderDatum;
 let fontBatterijInput, kleurBatterijInput, grootteBatterijInput, weergaveGrootteBatterij, breedteBatterijInput, weergaveBreedteBatterij, paddingOnderBatterijInput, weergavePaddingOnderBatterij;
@@ -82,6 +82,7 @@ function initializeDOMReferences() {
     bewaarFavorietKnop = document.getElementById('bewaar-favoriet');
     herstelStandaardKnop = document.getElementById('herstel-standaard');
     herstelFavorietKnop = document.getElementById('herstel-favoriet');
+    downloadNotepadKnop = document.getElementById('download-notepad');
 
     // Instellingen
     fontTijdInput = document.getElementById('font-tijd');
@@ -182,6 +183,7 @@ function applyTranslations() {
     bewaarFavorietKnop.textContent = chrome.i18n.getMessage('saveFavoritesText');
     herstelStandaardKnop.textContent = chrome.i18n.getMessage('defaultSettingsText');
     herstelFavorietKnop.textContent = chrome.i18n.getMessage('restoreFavoritesText');
+    if (downloadNotepadKnop) downloadNotepadKnop.textContent = chrome.i18n.getMessage('downloadNotepadText');
     if (notepadArea) notepadArea.placeholder = chrome.i18n.getMessage('notepadPlaceholder');
     document.getElementById('lblKlokPositie').textContent = chrome.i18n.getMessage('positionLabel');
     document.getElementById('optPosTopLeft').textContent = chrome.i18n.getMessage('posTopLeft');
@@ -657,6 +659,43 @@ function setupEventListeners() {
     herstelFavorietKnop.addEventListener('click', herstelFavorieteInstellingen);
     toggleNotepadKnop.addEventListener('click', toggleUserPreferenceNotepad);
     startScreensaverKnop.addEventListener('click', toggleScreensaver);
+    if (downloadNotepadKnop) {
+        downloadNotepadKnop.addEventListener('click', async () => {
+            const content = notepadArea.value;
+
+            // Try to use File System Access API if available
+            if ('showSaveFilePicker' in window) {
+                try {
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: 'notepad.txt',
+                        types: [{
+                            description: 'Text file',
+                            accept: { 'text/plain': ['.txt'] },
+                        }],
+                    });
+                    const writable = await handle.createWritable();
+                    await writable.write(content);
+                    await writable.close();
+                    return; // Success
+                } catch (err) {
+                    // If user cancels, we just stop. If other error, we might fallback.
+                    if (err.name === 'AbortError') return;
+                    console.error('File System Access API failed, falling back to download:', err);
+                }
+            }
+
+            // Fallback to traditional download
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'notepad.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    }
     stopAlarmKnop.addEventListener('click', () => {
         chrome.runtime.sendMessage({ action: 'stop-alarm-sound' });
         stopAlarmKnop.classList.add('hidden');

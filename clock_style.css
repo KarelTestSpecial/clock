@@ -358,9 +358,15 @@ body.alarm-active {
 /* Visueel onderscheid voor save/restore knoppen */
 #bewaar-favoriet,
 #herstel-favoriet,
-#herstel-standaard {
+#herstel-standaard,
+#download-notepad {
     background-color: #888888;
     /* Duidelijk lichter grijs voor dark mode */
+}
+
+#download-notepad {
+    margin-top: 10px;
+    flex-grow: 1;
 }
 
 #stop-alarm {

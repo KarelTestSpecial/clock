@@ -160,5 +160,8 @@
     },
     "stopAlarmText": {
         "message": "STOP"
+    },
+    "downloadNotepadText": {
+        "message": "Save Notepad (.txt)"
     }
 }
