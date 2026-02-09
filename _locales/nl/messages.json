@@ -175,5 +175,11 @@
     },
     "toggleNotepadAddPositionText": {
         "message": "Boven/Onder Toevoegen"
+    },
+    "notificationUpdateTitle": {
+        "message": "Update compleet"
+    },
+    "notificationUpdateMessage": {
+        "message": "De contextmenu research-functie en de 'Kladblok Opslaan'-optie zijn nu beschikbaar!"
     }
 }

@@ -98,6 +98,13 @@ async function updateContextMenus() {
 
 chrome.runtime.onInstalled.addListener(() => {
     updateContextMenus();
+    chrome.notifications.create({
+        type: 'basic',
+        iconUrl: 'icon/clock_icon48x48.png',
+        title: chrome.i18n.getMessage('notificationUpdateTitle'),
+        message: chrome.i18n.getMessage('notificationUpdateMessage'),
+        priority: 2
+    });
 });
 
 chrome.storage.onChanged.addListener((changes, areaName) => {

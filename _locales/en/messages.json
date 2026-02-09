@@ -175,5 +175,11 @@
     },
     "toggleNotepadAddPositionText": {
         "message": "Add to Top/Bottom"
+    },
+    "notificationUpdateTitle": {
+        "message": "Update complete"
+    },
+    "notificationUpdateMessage": {
+        "message": "The context menu research feature and the 'Save Notepad' option are now available!"
     }
 }

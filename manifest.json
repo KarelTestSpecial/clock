@@ -15,7 +15,8 @@
     "system.display",
     "alarms",
     "offscreen",
-    "contextMenus"
+    "contextMenus",
+    "notifications"
   ],
   "background": {
     "service_worker": "background.js"
