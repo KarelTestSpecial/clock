@@ -170,17 +170,23 @@
     "contextMenuAddUrl": {
         "message": "Add URL to Notepad"
     },
-    "toggleContextMenuText": {
-        "message": "Toggle Context Menu"
+    "contextMenuOnText": {
+        "message": "Context Menu Option: ON"
     },
-    "toggleNotepadAddPositionText": {
-        "message": "Add to Top/Bottom"
+    "contextMenuOffText": {
+        "message": "Context Menu Option: OFF"
+    },
+    "notepadPositionTopText": {
+        "message": "Add to: TOP"
+    },
+    "notepadPositionBottomText": {
+        "message": "Add to: BOTTOM"
     },
     "notificationUpdateTitle": {
         "message": "Update complete"
     },
     "notificationUpdateMessage": {
-        "message": "The context menu research feature and the 'Save Notepad' option are now available!"
+        "message": "The context menu research feature and the 'Save Notepad' option are now available! Check Settings"
     },
     "lblContextMenuGroup": {
         "message": "Context Menu Option"

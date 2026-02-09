@@ -113,6 +113,20 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
     }
 });
 
+chrome.notifications.onClicked.addListener(async () => {
+    const existingWindow = await findClockWindow();
+    if (existingWindow) {
+        await chrome.windows.update(existingWindow.id, { focused: true });
+        const tabs = await chrome.tabs.query({ windowId: existingWindow.id });
+        const clockTab = tabs.find(tab => tab.url.includes("clock_window.html"));
+        if (clockTab) {
+            chrome.tabs.sendMessage(clockTab.id, { action: 'open-settings' });
+        }
+    } else {
+        await createClockWindow("?openSettings=true");
+    }
+});
+
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     let textToAdd = "";
     if (info.menuItemId === "add-selection-to-notepad") {
@@ -147,7 +161,7 @@ async function findClockWindow() {
     return null;
 }
 
-async function createClockWindow() {
+async function createClockWindow(query = "") {
     const defaultWidth = 320;
     const defaultHeight = 220;
     const { windowWidth, windowHeight } = await chrome.storage.local.get({ windowWidth: defaultWidth, windowHeight: defaultHeight });
@@ -160,7 +174,7 @@ async function createClockWindow() {
 
     try {
         return await chrome.windows.create({
-            url: chrome.runtime.getURL("clock_window.html"),
+            url: chrome.runtime.getURL("clock_window.html" + query),
             type: "popup",
             width: windowWidth,
             height: windowHeight,

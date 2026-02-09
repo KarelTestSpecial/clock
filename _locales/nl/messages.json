@@ -170,17 +170,23 @@
     "contextMenuAddUrl": {
         "message": "URL toevoegen aan Kladblok"
     },
-    "toggleContextMenuText": {
-        "message": "Contextmenu Aan/Uit"
+    "contextMenuOnText": {
+        "message": "Contextmenuoptie: AAN"
     },
-    "toggleNotepadAddPositionText": {
-        "message": "Boven/Onder Toevoegen"
+    "contextMenuOffText": {
+        "message": "Contextmenuoptie: UIT"
+    },
+    "notepadPositionTopText": {
+        "message": "Toevoegen aan: BOVENKANT"
+    },
+    "notepadPositionBottomText": {
+        "message": "Toevoegen aan: ONDERKANT"
     },
     "notificationUpdateTitle": {
         "message": "Update compleet"
     },
     "notificationUpdateMessage": {
-        "message": "De contextmenu research-functie en de 'Kladblok Opslaan'-optie zijn nu beschikbaar!"
+        "message": "De contextmenu research-functie en de 'Kladblok Opslaan'-optie zijn nu beschikbaar! Bekijk Instellingen"
     },
     "lblContextMenuGroup": {
         "message": "Contextmenuoptie"

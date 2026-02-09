@@ -366,6 +366,7 @@ body.alarm-active {
 
 #download-notepad {
     flex-grow: 1;
+    margin-top: 10px;
 }
 
 #klok-positie-select,

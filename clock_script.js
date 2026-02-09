@@ -10,7 +10,7 @@ let notepadTextAlignSelect, fontNotepadInput, grootteNotepadInput, weergaveGroot
 let toggleDatumKnop, startScreensaverKnop, statusMessageElement, klokPositieSelect;
 
 // Globale status- en timer-variabelen
-let toonSeconden, toonBatterij, showDayOfWeek, showYear, currentLocale;
+let toonSeconden, toonBatterij, showDayOfWeek, showYear, currentLocale, isContextMenuEnabled, addAtTop;
 let isScreensaverActive = false;
 let screensaverAnimationTimeout = null;
 let statusMessageTimeoutId = null;
@@ -142,6 +142,19 @@ function initializeDOMReferences() {
     }
 }
 
+function updateToggleButtonTexts() {
+    if (toggleContextMenuKnop) {
+        toggleContextMenuKnop.textContent = isContextMenuEnabled ?
+            chrome.i18n.getMessage('contextMenuOnText') :
+            chrome.i18n.getMessage('contextMenuOffText');
+    }
+    if (toggleNotepadAddPositionKnop) {
+        toggleNotepadAddPositionKnop.textContent = addAtTop ?
+            chrome.i18n.getMessage('notepadPositionTopText') :
+            chrome.i18n.getMessage('notepadPositionBottomText');
+    }
+}
+
 function applyTranslations() {
     currentLocale = chrome.i18n.getMessage('dateLocale');
     document.documentElement.lang = chrome.i18n.getUILanguage().split('-')[0];
@@ -152,8 +165,7 @@ function applyTranslations() {
     toggleDagNaamKnop.textContent = chrome.i18n.getMessage('toggleDayOfWeekText');
     if (toggleJaarKnop) toggleJaarKnop.textContent = chrome.i18n.getMessage('toggleYearText');
     toggleNotepadKnop.textContent = chrome.i18n.getMessage('toggleNotepadText');
-    if (toggleContextMenuKnop) toggleContextMenuKnop.textContent = chrome.i18n.getMessage('toggleContextMenuText');
-    if (toggleNotepadAddPositionKnop) toggleNotepadAddPositionKnop.textContent = chrome.i18n.getMessage('toggleNotepadAddPositionText');
+    updateToggleButtonTexts();
     if (document.getElementById('lblContextMenuGroup')) document.getElementById('lblContextMenuGroup').textContent = chrome.i18n.getMessage('lblContextMenuGroup');
     toonInstellingenKnop.textContent = chrome.i18n.getMessage('toggleSettingsText');
     startScreensaverKnop.textContent = chrome.i18n.getMessage('startScreensaverText');
@@ -328,6 +340,9 @@ async function laadInstellingen() {
     applyDatumVisibility(opgeslagenInstellingen.isDatumVisible);
     applyBatteryVisibility(opgeslagenInstellingen.toonBatterij);
     applyNotepadSettings(opgeslagenInstellingen);
+    isContextMenuEnabled = opgeslagenInstellingen.isContextMenuEnabled;
+    addAtTop = opgeslagenInstellingen.addAtTop;
+    updateToggleButtonTexts();
     for (let i = 1; i <= 2; i++) {
         const settings = opgeslagenInstellingen[`alarm${i}Settings`];
         const timeInput = document.getElementById(`alarm-tijd-${i}`);
@@ -675,16 +690,16 @@ function setupEventListeners() {
     toggleNotepadKnop.addEventListener('click', toggleUserPreferenceNotepad);
     if (toggleContextMenuKnop) {
         toggleContextMenuKnop.addEventListener('click', async () => {
-            let { isContextMenuEnabled } = await chrome.storage.local.get({ isContextMenuEnabled: standaardInstellingen.isContextMenuEnabled });
-            const nieuweStatus = !isContextMenuEnabled;
-            await chrome.storage.local.set({ isContextMenuEnabled: nieuweStatus });
+            isContextMenuEnabled = !isContextMenuEnabled;
+            updateToggleButtonTexts();
+            await chrome.storage.local.set({ isContextMenuEnabled: isContextMenuEnabled });
         });
     }
     if (toggleNotepadAddPositionKnop) {
         toggleNotepadAddPositionKnop.addEventListener('click', async () => {
-            let { addAtTop } = await chrome.storage.local.get({ addAtTop: standaardInstellingen.addAtTop });
-            const nieuweStatus = !addAtTop;
-            await chrome.storage.local.set({ addAtTop: nieuweStatus });
+            addAtTop = !addAtTop;
+            updateToggleButtonTexts();
+            await chrome.storage.local.set({ addAtTop: addAtTop });
         });
     }
     startScreensaverKnop.addEventListener('click', toggleScreensaver);
@@ -815,6 +830,15 @@ async function initializeClock() {
     updateKlok();
     setupEventListeners();
     clockInterval = setInterval(updateKlok, 1000);
+
+    // Check for openSettings parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('openSettings') === 'true') {
+        if (instellingenPaneel && instellingenPaneel.classList.contains('hidden')) {
+            toggleInstellingenPaneel();
+        }
+    }
+
     document.dispatchEvent(new CustomEvent('clockInitialized'));
 }
 
@@ -834,5 +858,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 stopAlarmKnop.classList.add('hidden');
             }
         }, alarmDurationInMs);
+    } else if (request.action === 'open-settings') {
+        if (instellingenPaneel && instellingenPaneel.classList.contains('hidden')) {
+            toggleInstellingenPaneel();
+        }
     }
 });
