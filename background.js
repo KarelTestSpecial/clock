@@ -77,17 +77,33 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 setTimeout(drawTimeIcon, 100);
 
 // --- Context Menus ---
+async function updateContextMenus() {
+    const { isContextMenuEnabled } = await chrome.storage.local.get({ isContextMenuEnabled: true });
+
+    chrome.contextMenus.removeAll(() => {
+        if (isContextMenuEnabled) {
+            chrome.contextMenus.create({
+                id: "add-selection-to-notepad",
+                title: chrome.i18n.getMessage("contextMenuAddSelection"),
+                contexts: ["selection"]
+            });
+            chrome.contextMenus.create({
+                id: "add-url-to-notepad",
+                title: chrome.i18n.getMessage("contextMenuAddUrl"),
+                contexts: ["page"]
+            });
+        }
+    });
+}
+
 chrome.runtime.onInstalled.addListener(() => {
-    chrome.contextMenus.create({
-        id: "add-selection-to-notepad",
-        title: chrome.i18n.getMessage("contextMenuAddSelection"),
-        contexts: ["selection"]
-    });
-    chrome.contextMenus.create({
-        id: "add-url-to-notepad",
-        title: chrome.i18n.getMessage("contextMenuAddUrl"),
-        contexts: ["page"]
-    });
+    updateContextMenus();
+});
+
+chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName === 'local' && changes.isContextMenuEnabled) {
+        updateContextMenus();
+    }
 });
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
@@ -99,8 +115,13 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     }
 
     if (textToAdd) {
-        const { notepadContent } = await chrome.storage.local.get({ notepadContent: "" });
-        const newContent = textToAdd + "\n\n" + (notepadContent || "");
+        const { notepadContent, addAtTop } = await chrome.storage.local.get({ notepadContent: "", addAtTop: true });
+        let newContent;
+        if (addAtTop) {
+            newContent = textToAdd + "\n\n" + (notepadContent || "");
+        } else {
+            newContent = (notepadContent || "") + "\n\n" + textToAdd;
+        }
         await chrome.storage.local.set({ notepadContent: newContent });
     }
 });

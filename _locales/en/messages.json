@@ -169,5 +169,11 @@
     },
     "contextMenuAddUrl": {
         "message": "Add URL to Notepad"
+    },
+    "toggleContextMenuText": {
+        "message": "Toggle Context Menu"
+    },
+    "toggleNotepadAddPositionText": {
+        "message": "Add to Top/Bottom"
     }
 }

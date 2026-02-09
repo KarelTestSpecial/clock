@@ -1,7 +1,7 @@
 
 // Globale DOM Element Referenties (na DOMContentLoaded)
 let tijdElement, datumElement, toggleSecondenKnop, toonInstellingenKnop, instellingenPaneel, batterijStatusElement, toggleBatterijKnop, toggleDagNaamKnop, toggleJaarKnop, stopAlarmKnop;
-let bewaarFavorietKnop, herstelStandaardKnop, herstelFavorietKnop, downloadNotepadKnop;
+let bewaarFavorietKnop, herstelStandaardKnop, herstelFavorietKnop, downloadNotepadKnop, toggleContextMenuKnop, toggleNotepadAddPositionKnop;
 let fontTijdInput, grootteTijdInput, weergaveGrootteTijd, kleurTijdInput, paddingOnderTijdInput, weergavePaddingOnderTijd, paddingBovenTijdInput, weergavePaddingBovenTijd;
 let fontDatumInput, grootteDatumInput, weergaveGrootteDatum, kleurDatumInput, paddingOnderDatumInput, weergavePaddingOnderDatum;
 let fontBatterijInput, kleurBatterijInput, grootteBatterijInput, weergaveGrootteBatterij, breedteBatterijInput, weergaveBreedteBatterij, paddingOnderBatterijInput, weergavePaddingOnderBatterij;
@@ -45,6 +45,8 @@ const standaardInstellingen = {
     isDatumVisible: true,
     notepadContent: '',
     isNotepadVisible: true,
+    isContextMenuEnabled: true,
+    addAtTop: true,
     notepadTextAlign: 'center',
     fontNotepad: 'Arial, sans-serif',
     grootteNotepad: 1.5,
@@ -84,6 +86,8 @@ function initializeDOMReferences() {
     herstelStandaardKnop = document.getElementById('herstel-standaard');
     herstelFavorietKnop = document.getElementById('herstel-favoriet');
     downloadNotepadKnop = document.getElementById('download-notepad');
+    toggleContextMenuKnop = document.getElementById('toggle-context-menu');
+    toggleNotepadAddPositionKnop = document.getElementById('toggle-notepad-add-position');
 
     // Instellingen
     fontTijdInput = document.getElementById('font-tijd');
@@ -148,6 +152,8 @@ function applyTranslations() {
     toggleDagNaamKnop.textContent = chrome.i18n.getMessage('toggleDayOfWeekText');
     if (toggleJaarKnop) toggleJaarKnop.textContent = chrome.i18n.getMessage('toggleYearText');
     toggleNotepadKnop.textContent = chrome.i18n.getMessage('toggleNotepadText');
+    if (toggleContextMenuKnop) toggleContextMenuKnop.textContent = chrome.i18n.getMessage('toggleContextMenuText');
+    if (toggleNotepadAddPositionKnop) toggleNotepadAddPositionKnop.textContent = chrome.i18n.getMessage('toggleNotepadAddPositionText');
     toonInstellingenKnop.textContent = chrome.i18n.getMessage('toggleSettingsText');
     startScreensaverKnop.textContent = chrome.i18n.getMessage('startScreensaverText');
     stopAlarmKnop.textContent = chrome.i18n.getMessage('stopAlarmText');
@@ -666,6 +672,20 @@ function setupEventListeners() {
     herstelStandaardKnop.addEventListener('click', herstelStandaardInstellingen);
     herstelFavorietKnop.addEventListener('click', herstelFavorieteInstellingen);
     toggleNotepadKnop.addEventListener('click', toggleUserPreferenceNotepad);
+    if (toggleContextMenuKnop) {
+        toggleContextMenuKnop.addEventListener('click', async () => {
+            let { isContextMenuEnabled } = await chrome.storage.local.get({ isContextMenuEnabled: standaardInstellingen.isContextMenuEnabled });
+            const nieuweStatus = !isContextMenuEnabled;
+            await chrome.storage.local.set({ isContextMenuEnabled: nieuweStatus });
+        });
+    }
+    if (toggleNotepadAddPositionKnop) {
+        toggleNotepadAddPositionKnop.addEventListener('click', async () => {
+            let { addAtTop } = await chrome.storage.local.get({ addAtTop: standaardInstellingen.addAtTop });
+            const nieuweStatus = !addAtTop;
+            await chrome.storage.local.set({ addAtTop: nieuweStatus });
+        });
+    }
     startScreensaverKnop.addEventListener('click', toggleScreensaver);
     if (downloadNotepadKnop) {
         downloadNotepadKnop.addEventListener('click', async () => {

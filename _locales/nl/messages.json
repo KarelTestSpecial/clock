@@ -169,5 +169,11 @@
     },
     "contextMenuAddUrl": {
         "message": "URL toevoegen aan Kladblok"
+    },
+    "toggleContextMenuText": {
+        "message": "Contextmenu Aan/Uit"
+    },
+    "toggleNotepadAddPositionText": {
+        "message": "Boven/Onder Toevoegen"
     }
 }
