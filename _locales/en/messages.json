@@ -163,5 +163,11 @@
     },
     "downloadNotepadText": {
         "message": "Save Notepad (.txt)"
+    },
+    "contextMenuAddSelection": {
+        "message": "Add selection to Notepad"
+    },
+    "contextMenuAddUrl": {
+        "message": "Add URL to Notepad"
     }
 }

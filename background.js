@@ -76,6 +76,35 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 // Initial draw
 setTimeout(drawTimeIcon, 100);
 
+// --- Context Menus ---
+chrome.runtime.onInstalled.addListener(() => {
+    chrome.contextMenus.create({
+        id: "add-selection-to-notepad",
+        title: chrome.i18n.getMessage("contextMenuAddSelection"),
+        contexts: ["selection"]
+    });
+    chrome.contextMenus.create({
+        id: "add-url-to-notepad",
+        title: chrome.i18n.getMessage("contextMenuAddUrl"),
+        contexts: ["page"]
+    });
+});
+
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+    let textToAdd = "";
+    if (info.menuItemId === "add-selection-to-notepad") {
+        textToAdd = info.selectionText;
+    } else if (info.menuItemId === "add-url-to-notepad") {
+        textToAdd = info.pageUrl;
+    }
+
+    if (textToAdd) {
+        const { notepadContent } = await chrome.storage.local.get({ notepadContent: "" });
+        const newContent = textToAdd + "\n\n" + (notepadContent || "");
+        await chrome.storage.local.set({ notepadContent: newContent });
+    }
+});
+
 
 // --- Window Management ---
 

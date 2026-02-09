@@ -163,5 +163,11 @@
     },
     "downloadNotepadText": {
         "message": "Kladblok Opslaan (.txt)"
+    },
+    "contextMenuAddSelection": {
+        "message": "Selectie toevoegen aan Kladblok"
+    },
+    "contextMenuAddUrl": {
+        "message": "URL toevoegen aan Kladblok"
     }
 }

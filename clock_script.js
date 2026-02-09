@@ -757,6 +757,15 @@ function setupEventListeners() {
     // System theme change listener
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFlatpickrTheme);
 
+    // Listen for storage changes (e.g. from context menu)
+    chrome.storage.onChanged.addListener((changes, area) => {
+        if (area === 'local' && changes.notepadContent) {
+            if (notepadArea && notepadArea.value !== changes.notepadContent.newValue) {
+                notepadArea.value = changes.notepadContent.newValue || '';
+            }
+        }
+    });
+
     window.addEventListener('resize', async () => {
         if (!chrome.runtime?.id) return;
         if (isScreensaverActive) {
