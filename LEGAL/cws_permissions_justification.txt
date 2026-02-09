@@ -14,3 +14,9 @@ Here is the justification for the permissions required by the "Very Practical Cl
 
 **5. `offscreen`**
    - **Justification:** This permission is required to play the alarm sounds reliably. Modern browsers have security policies that prevent background scripts from playing audio directly. The `offscreen` permission allows the extension to create a minimal, hidden document for the sole purpose of playing the alarm audio, which is the modern, approved method for this functionality.
+
+**6. `contextMenus`**
+   - **Justification:** This permission is used to provide the "Add selection to Notepad" and "Add URL to Notepad" features. It allows users to quickly save important information or website links directly to the extension's built-in notepad from any web page, enhancing the extension's utility as a research and productivity tool.
+
+**7. `notifications`**
+   - **Justification:** This permission is used to send a one-time system notification when the extension is updated. This ensures users are immediately informed about new features and improvements, helping them get the most out of the extension.
