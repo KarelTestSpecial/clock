@@ -154,6 +154,7 @@ function applyTranslations() {
     toggleNotepadKnop.textContent = chrome.i18n.getMessage('toggleNotepadText');
     if (toggleContextMenuKnop) toggleContextMenuKnop.textContent = chrome.i18n.getMessage('toggleContextMenuText');
     if (toggleNotepadAddPositionKnop) toggleNotepadAddPositionKnop.textContent = chrome.i18n.getMessage('toggleNotepadAddPositionText');
+    if (document.getElementById('lblContextMenuGroup')) document.getElementById('lblContextMenuGroup').textContent = chrome.i18n.getMessage('lblContextMenuGroup');
     toonInstellingenKnop.textContent = chrome.i18n.getMessage('toggleSettingsText');
     startScreensaverKnop.textContent = chrome.i18n.getMessage('startScreensaverText');
     stopAlarmKnop.textContent = chrome.i18n.getMessage('stopAlarmText');

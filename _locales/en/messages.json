@@ -181,5 +181,8 @@
     },
     "notificationUpdateMessage": {
         "message": "The context menu research feature and the 'Save Notepad' option are now available!"
+    },
+    "lblContextMenuGroup": {
+        "message": "Context Menu Option"
     }
 }

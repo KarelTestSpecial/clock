@@ -365,8 +365,12 @@ body.alarm-active {
 }
 
 #download-notepad {
-    margin-top: 10px;
     flex-grow: 1;
+}
+
+#klok-positie-select,
+#breedte-batterij {
+    margin-bottom: 0;
 }
 
 #stop-alarm {

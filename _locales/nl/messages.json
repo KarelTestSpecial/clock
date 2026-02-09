@@ -181,5 +181,8 @@
     },
     "notificationUpdateMessage": {
         "message": "De contextmenu research-functie en de 'Kladblok Opslaan'-optie zijn nu beschikbaar!"
+    },
+    "lblContextMenuGroup": {
+        "message": "Contextmenuoptie"
     }
 }
