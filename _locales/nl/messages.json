@@ -75,7 +75,7 @@
         "message": "Opvulling Onder Batterij"
     },
     "backgroundElementsColorLabel": {
-        "message": "Achtergrond Elementen"
+        "message": "Kladblok Achtergrond"
     },
     "backgroundColorLabel": {
         "message": "Achtergrondkleur"
@@ -110,8 +110,11 @@
     "notepadPlaceholder": {
         "message": "Uw notities hier..."
     },
-    "positionLabel": {
+    "clockPositionLabel": {
         "message": "Klok Positie"
+    },
+    "clockPositionHeader": {
+        "message": "Instellingen Klok Positie"
     },
     "posTopLeft": {
         "message": "Linksboven"
@@ -153,7 +156,7 @@
         "message": "Batterij Aan/Uit"
     },
     "iconColorLabel": {
-        "message": "Werkbalk Icoonkleur"
+        "message": "Toolbar Icoon Kleur"
     },
     "notepadColorLabel": {
         "message": "Kladblok Tekstkleur"
@@ -171,16 +174,22 @@
         "message": "URL toevoegen aan Kladblok"
     },
     "contextMenuOnText": {
-        "message": "Contextmenuoptie: AAN"
+        "message": "AAN"
     },
     "contextMenuOffText": {
-        "message": "Contextmenuoptie: UIT"
+        "message": "UIT"
+    },
+    "lblContextMenu": {
+        "message": "Contextmenuoptie"
     },
     "notepadPositionTopText": {
-        "message": "Toevoegen aan: BOVENKANT"
+        "message": "BOVENAAN"
     },
     "notepadPositionBottomText": {
-        "message": "Toevoegen aan: ONDERKANT"
+        "message": "ONDERAAN"
+    },
+    "lblNotepadAddPosition": {
+        "message": "Toevoegen"
     },
     "notificationUpdateTitle": {
         "message": "Update compleet"
@@ -190,5 +199,26 @@
     },
     "lblContextMenuGroup": {
         "message": "Contextmenuoptie"
+    },
+    "storageUsedLabel": {
+        "message": "Opslag verbruikt"
+    },
+    "deleteNoteTooltip": {
+        "message": "Notitie Verwijderen"
+    },
+    "errorCannotDeleteLastNote": {
+        "message": "Kan de laatste notitie niet verwijderen."
+    },
+    "confirmDeleteNote": {
+        "message": "Deze notitie verwijderen?"
+    },
+    "promptRenameNote": {
+        "message": "Nieuwe titel:"
+    },
+    "confirmResetAll": {
+        "message": "Alle instellingen en notities resetten naar standaard?"
+    },
+    "errorStorageFull": {
+        "message": "Opslaglimiet bereikt!"
     }
 }

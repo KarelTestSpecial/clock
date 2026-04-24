@@ -15,7 +15,12 @@
         <div id="batterij-status"></div>
 
         <div id="notepad-container">
-            <textarea id="notepad-area" rows="3"></textarea>
+            <div id="notepad-tabs-bar">
+                <button id="add-note-btn" title="New Note">+</button>
+                <div id="tabs-list"></div>
+                <button id="quick-align-btn" title="Toggle Alignment">≡</button>
+            </div>
+            <textarea id="notepad-area" rows="3" placeholder="Uw notities hier..."></textarea>
         </div>
 
         <div id="knoppen-wrapper">
@@ -76,8 +81,18 @@
                     <input type="range" id="padding-boven-tijd" min="0" max="50" step="1">
                     <label for="padding-onder-tijd"><span id="lblPaddingOnderTijdText"></span> <span id="weergave-padding-onder-tijd"></span></label>
                     <input type="range" id="padding-onder-tijd" min="0" max="50" step="1">
-                    <label for="icon-color-picker" id="lblIconColor"></label>
-                    <input type="color" id="icon-color-picker" value="#FFFFFF">
+                    <div class="bottom-settings">
+                        <label for="klok-positie-select" id="lblKlokPositie"></label>
+                        <select id="klok-positie-select">
+                            <option value="top-left" id="optPosTopLeft"></option>
+                            <option value="top-center" id="optPosTopCenter"></option>
+                            <option value="top-right" id="optPosTopRight"></option>
+                            <option value="center-center" id="optPosCenterCenter"></option>
+                            <option value="bottom-left" id="optPosBottomLeft"></option>
+                            <option value="bottom-center" id="optPosBottomCenter"></option>
+                            <option value="bottom-right" id="optPosBottomRight"></option>
+                        </select>
+                    </div>
                 </div>
                 <div class="instelling-groep">
                     <h4 id="dateLabel">Date</h4>
@@ -93,17 +108,12 @@
                     <input type="color" id="kleur-datum">
                     <label for="padding-onder-datum"><span id="lblPaddingOnderDatumText"></span> <span id="weergave-padding-onder-datum"></span></label>
                     <input type="range" id="padding-onder-datum" min="0" max="50" step="1">
-                    <label for="klok-positie-select" id="lblKlokPositie"></label>
-                    <select id="klok-positie-select">
-                        <option value="top-left" id="optPosTopLeft"></option>
-                        <option value="top-center" id="optPosTopCenter"></option>
-                        <option value="top-right" id="optPosTopRight"></option>
-                        <option value="center-center" id="optPosCenterCenter"></option>
-                        <option value="bottom-left" id="optPosBottomLeft"></option>
-                        <option value="bottom-center" id="optPosBottomCenter"></option>
-                        <option value="bottom-right" id="optPosBottomRight"></option>
-                    </select>
-                    <button id="download-notepad"></button>
+                    <div class="bottom-settings">
+                        <label for="icon-color-picker" id="lblIconColor"></label>
+                        <input type="color" id="icon-color-picker" value="#FFFFFF">
+                        <label for="achtergrond-kleur" id="lblAchtergrondKleur"></label>
+                        <input type="color" id="achtergrond-kleur">
+                    </div>
                 </div>
                 <div class="instelling-groep">
                     <h4 id="batteryLabel">Battery</h4>
@@ -117,13 +127,21 @@
                     <input type="range" id="grootte-batterij" min="1.0" max="3.0" step="0.1">
                     <label for="kleur-batterij" id="lblKleurBatterij"></label>
                     <input type="color" id="kleur-batterij">
-                    <label for="padding-onder-batterij"><span id="lblPaddingOnderBatterijText"></span> <span id="weergave-padding-onder-batterij"></span></label>
-                    <input type="range" id="padding-onder-batterij" min="0" max="50" step="1">
                     <label for="breedte-batterij"><span id="lblBreedteBatterijText"></span> <span id="weergave-breedte-batterij"></span></label>
                     <input type="range" id="breedte-batterij" min="0.5" max="2.5" step="0.05">
-                    <label id="lblContextMenuGroup"></label>
-                    <button id="toggle-context-menu"></button>
-                    <button id="toggle-notepad-add-position"></button>
+                    <label for="padding-onder-batterij"><span id="lblPaddingOnderBatterijText"></span> <span id="weergave-padding-onder-batterij"></span></label>
+                    <input type="range" id="padding-onder-batterij" min="0" max="50" step="1">
+                    <div class="bottom-settings">
+                        <h4 id="lblContextMenuGroup"></h4>
+                        <div class="setting-row">
+                            <span id="lblContextMenu"></span>
+                            <button id="toggle-context-menu"></button>
+                        </div>
+                        <div class="setting-row">
+                            <span id="lblNotepadAddPosition"></span>
+                            <button id="toggle-notepad-add-position"></button>
+                        </div>
+                    </div>
                 </div>
                 <div class="instelling-groep">
                     <h4 id="notepadLabel">Notepad & General</h4>
@@ -143,10 +161,17 @@
                         <option value="center" id="optTextAlignCenter"></option>
                         <option value="right" id="optTextAlignRight"></option>
                     </select>
-                    <label for="achtergrond-elementen-kleur" id="lblAchtergrondElementen"></label>
-                    <input type="color" id="achtergrond-elementen-kleur">
-                    <label for="achtergrond-kleur" id="lblAchtergrondKleur"></label>
-                    <input type="color" id="achtergrond-kleur">
+                    <div class="bottom-settings">
+                        <label for="achtergrond-elementen-kleur" id="lblAchtergrondElementen"></label>
+                        <input type="color" id="achtergrond-elementen-kleur">
+                        <button id="download-notepad"></button>
+                    </div>
+                    <div id="storage-monitor">
+                        <span id="storage-text"></span>
+                        <div id="storage-bar-container">
+                            <div id="storage-bar-fill"></div>
+                        </div>
+                    </div>
                 </div>
         </div>
     </div>

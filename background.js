@@ -136,14 +136,22 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     }
 
     if (textToAdd) {
-        const { notepadContent, addAtTop } = await chrome.storage.local.get({ notepadContent: "", addAtTop: true });
-        let newContent;
+        const { notes, activeNoteId, addAtTop } = await chrome.storage.local.get({ 
+            notes: [{ id: 'default', title: 'Note 1', content: '' }], 
+            activeNoteId: 'default',
+            addAtTop: true 
+        });
+        
+        const activeNote = notes.find(n => n.id === activeNoteId) || notes[0];
+        const oldContent = activeNote.content || "";
+        
         if (addAtTop) {
-            newContent = textToAdd + "\n\n" + (notepadContent || "");
+            activeNote.content = textToAdd + "\n\n" + oldContent;
         } else {
-            newContent = (notepadContent || "") + "\n\n" + textToAdd;
+            activeNote.content = oldContent + (oldContent ? "\n\n" : "") + textToAdd;
         }
-        await chrome.storage.local.set({ notepadContent: newContent });
+        
+        await chrome.storage.local.set({ notes });
     }
 });
 

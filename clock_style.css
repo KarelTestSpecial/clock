@@ -24,6 +24,18 @@ body {
     font-family: Arial, sans-serif;
 }
 
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.setting-row select {
+    flex: 0 0 auto;
+    width: auto !important;
+    min-width: 120px;
+    padding: 2px 5px;
+    margin-bottom: 0 !important;
+}
+
 body.position-top-left {
     place-content: flex-start flex-start;
 }
@@ -101,26 +113,117 @@ body.notepad-open {
 }
 
 #notepad-container {
-    width: 100%;
-    margin-top: 5px;
-    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    align-items: inherit;
     flex-grow: 1;
+    width: 100%;
+    min-height: 0;
+}
+
+#notepad-tabs-bar {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0;
+    gap: 0;
+    width: 100%;
+}
+
+#tabs-list {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-grow: 1;
+}
+
+#tabs-list::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.notepad-tab {
+    padding: 8px 0;
+    margin-right: 20px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9em;
+    color: #666;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: color 0.2s, border-color 0.2s;
+    user-select: none;
+    border-bottom: 2px solid transparent;
+}
+
+.notepad-tab:hover {
+    color: #aaa;
+}
+
+.notepad-tab.active {
+    color: #eee;
+    border-bottom: 2px solid #eee;
+}
+
+.delete-tab {
+    font-size: 1.2em;
+    line-height: 1;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    margin-left: 4px;
+    padding: 0 2px;
+}
+
+.delete-tab:hover {
+    opacity: 1;
+    color: #ff4444;
+}
+
+#add-note-btn {
+    background-color: #333;
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: #888;
+    font-size: 1em;
+    padding: 2px 10px;
+    margin: 4px 10px 4px 4px;
+    cursor: pointer;
+    line-height: 1.2;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+#quick-align-btn {
+    background-color: #333;
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: #888;
+    font-size: 1.1em;
+    padding: 2px 10px;
+    margin: 4px 4px 4px 10px;
+    cursor: pointer;
+    line-height: 1.2;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+#add-note-btn:hover,
+#quick-align-btn:hover {
+    background-color: #444;
+    color: #eee;
 }
 
 #notepad-area {
     width: 100%;
-    height: 100%;
-    padding: 5px;
-    font-size: 0.9em;
-    border: 1px solid #555;
-    background-color: #282828;
+    flex-grow: 1;
+    padding: 15px 5px;
+    font-size: 1em;
+    border: none;
+    background-color: transparent;
     color: #eee;
     resize: none;
-    /* Disable manual resizing */
-    box-sizing: border-box;
+    outline: none;
+    min-height: 0;
 }
 
 #notepad-container.hidden {
@@ -130,10 +233,11 @@ body.notepad-open {
 #knoppen-wrapper {
     display: flex;
     justify-content: center;
-    /* Center buttons within the wrapper */
     gap: 10px;
     width: 100%;
-    margin-top: 8px;
+    margin-top: auto;
+    padding-top: 8px;
+    padding-bottom: 5px;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease-in-out;
@@ -197,10 +301,20 @@ button:hover {
     flex: 1;
 }
 
+.bottom-settings {
+    margin-top: auto;
+}
+
 .instelling-groep h4 {
     margin: 0 0 8px 0;
-    font-size: 1em;
+    font-size: 1.1em;
     text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 4px;
+}
+
+.instelling-groep h4:not(:first-child) {
+    margin-top: 15px;
 }
 
 .instellingen-paneel label {
@@ -223,6 +337,26 @@ button:hover {
 
 .instellingen-paneel input[type="range"] {
     padding: 0;
+}
+
+.setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+    width: 100%;
+}
+
+.setting-row span {
+    font-size: 0.9em;
+    color: #ccc;
+    flex: 1;
+}
+
+.setting-row button {
+    flex: 0 0 auto;
+    min-width: 80px;
+    padding: 3px 8px;
 }
 
 .instellingen-paneel input.flatpickr-input {
@@ -365,8 +499,20 @@ body.alarm-active {
 }
 
 #download-notepad {
-    flex-grow: 1;
-    margin-top: 10px;
+    background-color: #444;
+    color: #eee;
+    border: 1px solid #666;
+    border-radius: 4px;
+    padding: 8px;
+    margin-top: 15px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 0.9em;
+    transition: background-color 0.2s;
+}
+
+#download-notepad:hover {
+    background-color: #555;
 }
 
 #klok-positie-select,
@@ -385,4 +531,40 @@ body.alarm-active {
 
 .hidden {
     display: none !important;
+}
+/* Storage Monitor Styles */
+#storage-monitor {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #555;
+}
+
+#storage-text {
+    font-size: 0.8em;
+    color: #aaa;
+    display: block;
+    margin-bottom: 4px;
+}
+
+#storage-bar-container {
+    width: 100%;
+    height: 6px;
+    background-color: #333;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+#storage-bar-fill {
+    height: 100%;
+    width: 0%;
+    background-color: #888;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+#storage-bar-fill.warning {
+    background-color: #ffaa00;
+}
+
+#storage-bar-fill.critical {
+    background-color: #ff4444;
 }

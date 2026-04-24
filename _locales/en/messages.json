@@ -75,7 +75,7 @@
         "message": "Padding Below Battery"
     },
     "backgroundElementsColorLabel": {
-        "message": "Background Elements"
+        "message": "Notepad Background"
     },
     "backgroundColorLabel": {
         "message": "Background Color"
@@ -110,8 +110,11 @@
     "notepadPlaceholder": {
         "message": "Your notes here..."
     },
-    "positionLabel": {
+    "clockPositionLabel": {
         "message": "Clock Position"
+    },
+    "clockPositionHeader": {
+        "message": "Clock Position Settings"
     },
     "posTopLeft": {
         "message": "Top Left"
@@ -171,16 +174,22 @@
         "message": "Add URL to Notepad"
     },
     "contextMenuOnText": {
-        "message": "Context Menu Option: ON"
+        "message": "ON"
     },
     "contextMenuOffText": {
-        "message": "Context Menu Option: OFF"
+        "message": "OFF"
+    },
+    "lblContextMenu": {
+        "message": "Context Menu Option"
     },
     "notepadPositionTopText": {
-        "message": "Add to: TOP"
+        "message": "TOP"
     },
     "notepadPositionBottomText": {
-        "message": "Add to: BOTTOM"
+        "message": "BOTTOM"
+    },
+    "lblNotepadAddPosition": {
+        "message": "Add to Notepad"
     },
     "notificationUpdateTitle": {
         "message": "Update complete"
@@ -190,5 +199,26 @@
     },
     "lblContextMenuGroup": {
         "message": "Context Menu Option"
+    },
+    "storageUsedLabel": {
+        "message": "Storage used"
+    },
+    "deleteNoteTooltip": {
+        "message": "Delete Note"
+    },
+    "errorCannotDeleteLastNote": {
+        "message": "Cannot delete the last note."
+    },
+    "confirmDeleteNote": {
+        "message": "Delete this note?"
+    },
+    "promptRenameNote": {
+        "message": "Enter new title:"
+    },
+    "confirmResetAll": {
+        "message": "Reset all settings and notes to default?"
+    },
+    "errorStorageFull": {
+        "message": "Storage limit reached!"
     }
 }

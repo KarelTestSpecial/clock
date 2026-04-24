@@ -6,8 +6,9 @@ let fontTijdInput, grootteTijdInput, weergaveGrootteTijd, kleurTijdInput, paddin
 let fontDatumInput, grootteDatumInput, weergaveGrootteDatum, kleurDatumInput, paddingOnderDatumInput, weergavePaddingOnderDatum;
 let fontBatterijInput, kleurBatterijInput, grootteBatterijInput, weergaveGrootteBatterij, breedteBatterijInput, weergaveBreedteBatterij, paddingOnderBatterijInput, weergavePaddingOnderBatterij;
 let achtergrondKleurInput, achtergrondElementenKleurInput, klokContainer, notepadContainer, notepadArea, toggleNotepadKnop, iconColorPicker, kleurNotepadInput;
-let notepadTextAlignSelect, fontNotepadInput, grootteNotepadInput, weergaveGrootteNotepad;
+let notepadTextAlignSelect, fontNotepadInput, grootteNotepadInput, weergaveGrootteNotepad, quickAlignBtn;
 let toggleDatumKnop, startScreensaverKnop, statusMessageElement, klokPositieSelect;
+let tabsList, addNoteBtn, storageText, storageBarFill;
 
 // Globale status- en timer-variabelen
 let toonSeconden, toonBatterij, showDayOfWeek, showYear, currentLocale, isContextMenuEnabled, addAtTop;
@@ -17,6 +18,8 @@ let statusMessageTimeoutId = null;
 let windowResizeTimer = null;
 let currentAlarmAudio = null;
 let clockInterval = null;
+let notes = [];
+let activeNoteId = null;
 
 // Standaardinstellingen
 const standaardInstellingen = {
@@ -43,7 +46,10 @@ const standaardInstellingen = {
     achtergrondKleur: '#000000',
     klokPositie: 'top-center',
     isDatumVisible: true,
-    notepadContent: '',
+    notes: [
+        { id: 'default', title: 'Note 1', content: '' }
+    ],
+    activeNoteId: 'default',
     isNotepadVisible: true,
     isContextMenuEnabled: true,
     addAtTop: true,
@@ -123,6 +129,11 @@ function initializeDOMReferences() {
     weergaveGrootteNotepad = document.getElementById('weergave-grootte-notepad');
     iconColorPicker = document.getElementById('icon-color-picker');
     kleurNotepadInput = document.getElementById('kleur-notepad');
+    tabsList = document.getElementById('tabs-list');
+    addNoteBtn = document.getElementById('add-note-btn');
+    storageText = document.getElementById('storage-text');
+    storageBarFill = document.getElementById('storage-bar-fill');
+    quickAlignBtn = document.getElementById('quick-align-btn');
 
     // Alarmen
     for (let i = 1; i <= 2; i++) {
@@ -167,6 +178,8 @@ function applyTranslations() {
     toggleNotepadKnop.textContent = chrome.i18n.getMessage('toggleNotepadText');
     updateToggleButtonTexts();
     if (document.getElementById('lblContextMenuGroup')) document.getElementById('lblContextMenuGroup').textContent = chrome.i18n.getMessage('lblContextMenuGroup');
+    if (document.getElementById('lblContextMenu')) document.getElementById('lblContextMenu').textContent = chrome.i18n.getMessage('lblContextMenu');
+    if (document.getElementById('lblNotepadAddPosition')) document.getElementById('lblNotepadAddPosition').textContent = chrome.i18n.getMessage('lblNotepadAddPosition');
     toonInstellingenKnop.textContent = chrome.i18n.getMessage('toggleSettingsText');
     startScreensaverKnop.textContent = chrome.i18n.getMessage('startScreensaverText');
     stopAlarmKnop.textContent = chrome.i18n.getMessage('stopAlarmText');
@@ -200,20 +213,21 @@ function applyTranslations() {
     document.getElementById('optTextAlignLeft').textContent = chrome.i18n.getMessage('textAlignLeft');
     document.getElementById('optTextAlignCenter').textContent = chrome.i18n.getMessage('textAlignCenter');
     document.getElementById('optTextAlignRight').textContent = chrome.i18n.getMessage('textAlignRight');
+    
+    if (document.getElementById('lblKlokPositie')) document.getElementById('lblKlokPositie').textContent = chrome.i18n.getMessage('clockPositionLabel');
+    if (document.getElementById('optPosTopLeft')) document.getElementById('optPosTopLeft').textContent = chrome.i18n.getMessage('posTopLeft');
+    if (document.getElementById('optPosTopCenter')) document.getElementById('optPosTopCenter').textContent = chrome.i18n.getMessage('posTopCenter');
+    if (document.getElementById('optPosTopRight')) document.getElementById('optPosTopRight').textContent = chrome.i18n.getMessage('posTopRight');
+    if (document.getElementById('optPosCenterCenter')) document.getElementById('optPosCenterCenter').textContent = chrome.i18n.getMessage('posCenterCenter');
+    if (document.getElementById('optPosBottomLeft')) document.getElementById('optPosBottomLeft').textContent = chrome.i18n.getMessage('posBottomLeft');
+    if (document.getElementById('optPosBottomCenter')) document.getElementById('optPosBottomCenter').textContent = chrome.i18n.getMessage('posBottomCenter');
+    if (document.getElementById('optPosBottomRight')) document.getElementById('optPosBottomRight').textContent = chrome.i18n.getMessage('posBottomRight');
     document.getElementById('lblIconColor').textContent = chrome.i18n.getMessage('iconColorLabel');
     bewaarFavorietKnop.textContent = chrome.i18n.getMessage('saveFavoritesText');
     herstelStandaardKnop.textContent = chrome.i18n.getMessage('defaultSettingsText');
     herstelFavorietKnop.textContent = chrome.i18n.getMessage('restoreFavoritesText');
     if (downloadNotepadKnop) downloadNotepadKnop.textContent = chrome.i18n.getMessage('downloadNotepadText');
     if (notepadArea) notepadArea.placeholder = chrome.i18n.getMessage('notepadPlaceholder');
-    document.getElementById('lblKlokPositie').textContent = chrome.i18n.getMessage('positionLabel');
-    document.getElementById('optPosTopLeft').textContent = chrome.i18n.getMessage('posTopLeft');
-    document.getElementById('optPosTopCenter').textContent = chrome.i18n.getMessage('posTopCenter');
-    document.getElementById('optPosTopRight').textContent = chrome.i18n.getMessage('posTopRight');
-    document.getElementById('optPosCenterCenter').textContent = chrome.i18n.getMessage('posCenterCenter');
-    document.getElementById('optPosBottomLeft').textContent = chrome.i18n.getMessage('posBottomLeft');
-    document.getElementById('optPosBottomCenter').textContent = chrome.i18n.getMessage('posBottomCenter');
-    document.getElementById('optPosBottomRight').textContent = chrome.i18n.getMessage('posBottomRight');
 }
 
 function setKlokLayout(positie) {
@@ -299,7 +313,6 @@ function applyAllSettings(settings) {
     if (weergavePaddingOnderBatterij) weergavePaddingOnderBatterij.textContent = settings.paddingOnderBatterij + 'px';
     if (achtergrondKleurInput) achtergrondKleurInput.value = settings.achtergrondKleur;
     if (achtergrondElementenKleurInput) achtergrondElementenKleurInput.value = settings.achtergrondElementenKleur;
-    if (instellingenPaneel) instellingenPaneel.style.backgroundColor = settings.achtergrondElementenKleur;
     if (notepadArea) {
         notepadArea.style.backgroundColor = settings.achtergrondElementenKleur;
         notepadArea.style.color = settings.kleurNotepad;
@@ -310,15 +323,28 @@ function applyAllSettings(settings) {
 
 function applyNotepadSettings(settings) {
     if (notepadArea) {
-        notepadArea.value = settings.notepadContent;
+        const activeNote = (settings.notes || notes).find(n => n.id === (settings.activeNoteId || activeNoteId));
+        notepadArea.value = activeNote ? activeNote.content : '';
         notepadArea.style.textAlign = settings.notepadTextAlign;
         notepadArea.style.fontFamily = settings.fontNotepad;
         notepadArea.style.fontSize = settings.grootteNotepad + 'em';
+        updateQuickAlignButtonIcon(settings.notepadTextAlign);
     }
     if (notepadTextAlignSelect) notepadTextAlignSelect.value = settings.notepadTextAlign;
     if (fontNotepadInput) fontNotepadInput.value = settings.fontNotepad;
     if (grootteNotepadInput) grootteNotepadInput.value = settings.grootteNotepad;
     if (weergaveGrootteNotepad) weergaveGrootteNotepad.textContent = settings.grootteNotepad + 'em';
+    renderTabs();
+}
+
+function updateQuickAlignButtonIcon(alignment) {
+    if (!quickAlignBtn) return;
+    const icons = {
+        'left': '⇐',
+        'center': '≡',
+        'right': '⇒'
+    };
+    quickAlignBtn.textContent = icons[alignment] || '≡';
 }
 
 function applyDatumVisibility(isVisible) {
@@ -339,7 +365,9 @@ async function laadInstellingen() {
     }
     applyDatumVisibility(opgeslagenInstellingen.isDatumVisible);
     applyBatteryVisibility(opgeslagenInstellingen.toonBatterij);
+    await migrateNotepadData(opgeslagenInstellingen);
     applyNotepadSettings(opgeslagenInstellingen);
+    updateStorageUsage();
     isContextMenuEnabled = opgeslagenInstellingen.isContextMenuEnabled;
     addAtTop = opgeslagenInstellingen.addAtTop;
     updateToggleButtonTexts();
@@ -412,6 +440,166 @@ async function applyAndSaveSetting(key, value, element, styleProperty) {
     await chrome.storage.local.set({ [key]: value });
 }
 
+async function migrateNotepadData(opgeslagenInstellingen) {
+    let changed = false;
+    // Migrate old notepadContent to notes array
+    if (opgeslagenInstellingen.notepadContent !== undefined && opgeslagenInstellingen.notepadContent !== '') {
+        const oldContent = opgeslagenInstellingen.notepadContent;
+        notes = [{ id: 'migrated', title: 'Note 1', content: oldContent }];
+        activeNoteId = 'migrated';
+        // Clear old content to avoid repeat migration
+        await chrome.storage.local.remove('notepadContent');
+        changed = true;
+    } else {
+        notes = opgeslagenInstellingen.notes || standaardInstellingen.notes;
+        activeNoteId = opgeslagenInstellingen.activeNoteId || standaardInstellingen.activeNoteId;
+    }
+
+    // Ensure we have at least one note
+    if (!notes || notes.length === 0) {
+        notes = [{ id: 'default', title: 'Note 1', content: '' }];
+        activeNoteId = 'default';
+        changed = true;
+    }
+
+    // Ensure activeNoteId points to a valid note
+    if (!notes.find(n => n.id === activeNoteId)) {
+        activeNoteId = notes[0].id;
+        changed = true;
+    }
+
+    if (changed) {
+        await chrome.storage.local.set({ notes, activeNoteId });
+    }
+}
+
+function renderTabs() {
+    if (!tabsList) return;
+    tabsList.innerHTML = '';
+    notes.forEach(note => {
+        const tab = document.createElement('div');
+        tab.className = `notepad-tab${note.id === activeNoteId ? ' active' : ''}`;
+        tab.dataset.id = note.id;
+
+        const titleSpan = document.createElement('span');
+        titleSpan.textContent = note.title || 'Untitled';
+        tab.appendChild(titleSpan);
+
+        const deleteBtn = document.createElement('span');
+        deleteBtn.className = 'delete-tab';
+        deleteBtn.innerHTML = '&times;';
+        deleteBtn.title = chrome.i18n.getMessage('deleteNoteTooltip') || 'Delete Note';
+        deleteBtn.onclick = (e) => {
+            e.stopPropagation();
+            deleteNote(note.id);
+        };
+        tab.appendChild(deleteBtn);
+
+        tab.onclick = () => switchNote(note.id);
+        tab.ondblclick = () => renameNote(note.id);
+
+        tabsList.appendChild(tab);
+    });
+}
+
+async function switchNote(id) {
+    if (id === activeNoteId) return;
+    
+    // Save current content first
+    const currentNote = notes.find(n => n.id === activeNoteId);
+    if (currentNote && notepadArea) {
+        currentNote.content = notepadArea.value;
+    }
+
+    activeNoteId = id;
+    const newNote = notes.find(n => n.id === activeNoteId);
+    if (notepadArea) {
+        notepadArea.value = newNote ? newNote.content : '';
+    }
+
+    renderTabs();
+    await chrome.storage.local.set({ notes, activeNoteId });
+    updateStorageUsage();
+}
+
+async function addNote() {
+    const newId = Date.now().toString();
+    const newNote = {
+        id: newId,
+        title: `Note ${notes.length + 1}`,
+        content: ''
+    };
+    
+    // Save current active note content
+    const currentNote = notes.find(n => n.id === activeNoteId);
+    if (currentNote && notepadArea) {
+        currentNote.content = notepadArea.value;
+    }
+
+    notes.push(newNote);
+    activeNoteId = newId;
+    
+    if (notepadArea) notepadArea.value = '';
+    
+    renderTabs();
+    await chrome.storage.local.set({ notes, activeNoteId });
+    updateStorageUsage();
+}
+
+async function deleteNote(id) {
+    if (notes.length <= 1) {
+        showStatusMessage(chrome.i18n.getMessage('errorCannotDeleteLastNote') || 'Cannot delete the last note.');
+        return;
+    }
+
+    if (!confirm(chrome.i18n.getMessage('confirmDeleteNote') || 'Delete this note?')) return;
+
+    notes = notes.filter(n => n.id !== id);
+    if (activeNoteId === id) {
+        activeNoteId = notes[0].id;
+        if (notepadArea) notepadArea.value = notes[0].content;
+    }
+
+    renderTabs();
+    await chrome.storage.local.set({ notes, activeNoteId });
+    updateStorageUsage();
+}
+
+function renameNote(id) {
+    const note = notes.find(n => n.id === id);
+    if (!note) return;
+
+    const newTitle = prompt(chrome.i18n.getMessage('promptRenameNote') || 'Enter new title:', note.title);
+    if (newTitle !== null && newTitle.trim() !== '') {
+        note.title = newTitle.trim();
+        renderTabs();
+        chrome.storage.local.set({ notes });
+    }
+}
+
+async function updateStorageUsage() {
+    if (!storageText || !storageBarFill) return;
+
+    chrome.storage.local.getBytesInUse(null, (bytes) => {
+        const quota = 5 * 1024 * 1024; // 5MB
+        const percentage = (bytes / quota) * 100;
+        const mbUsed = (bytes / (1024 * 1024)).toFixed(2);
+        
+        storageText.textContent = `${chrome.i18n.getMessage('storageUsedLabel') || 'Storage used'}: ${mbUsed}MB / 5.00MB`;
+        storageBarFill.style.width = `${Math.min(percentage, 100)}%`;
+        
+        storageBarFill.classList.remove('warning', 'critical');
+        if (percentage > 90) {
+            storageBarFill.classList.add('critical');
+            if (percentage >= 100) {
+                showStatusMessage(chrome.i18n.getMessage('errorStorageFull') || 'Storage is full!');
+            }
+        } else if (percentage > 70) {
+            storageBarFill.classList.add('warning');
+        }
+    });
+}
+
 
 async function updateKlok() {
     if (!chrome.runtime?.id) {
@@ -467,7 +655,19 @@ function toggleInstellingenPaneel() {
 }
 
 async function saveNotepadContent() {
-    if (notepadArea) await chrome.storage.local.set({ notepadContent: notepadArea.value });
+    if (notepadArea) {
+        const currentNote = notes.find(n => n.id === activeNoteId);
+        if (currentNote) {
+            currentNote.content = notepadArea.value;
+            try {
+                await chrome.storage.local.set({ notes });
+                updateStorageUsage();
+            } catch (e) {
+                console.error("Storage error:", e);
+                showStatusMessage(chrome.i18n.getMessage('errorStorageFull') || 'Storage limit reached!');
+            }
+        }
+    }
 }
 
 function showStatusMessage(message) {
@@ -527,11 +727,15 @@ async function bewaarFavorieteInstellingen() {
 async function herstelStandaardInstellingen() {
     applyAllSettings(standaardInstellingen);
     applyDatumVisibility(standaardInstellingen.isDatumVisible);
-    applyNotepadSettings({ ...standaardInstellingen, notepadContent: notepadArea.value });
-    if (notepadArea) notepadArea.style.height = '';
-    const instellingenOmOpTeSlaan = { ...standaardInstellingen };
-    delete instellingenOmOpTeSlaan.notepadContent;
-    await chrome.storage.local.set({ ...instellingenOmOpTeSlaan });
+    
+    // Resetting notes to default while keeping current ones in memory if user cancels? 
+    // Usually "Default" means reset everything. But we should be careful with notes.
+    if (confirm(chrome.i18n.getMessage('confirmResetAll') || 'Reset all settings and notes to default?')) {
+        notes = [...standaardInstellingen.notes];
+        activeNoteId = standaardInstellingen.activeNoteId;
+        applyNotepadSettings(standaardInstellingen);
+        await chrome.storage.local.set({ ...standaardInstellingen });
+    }
     await laadInstellingen();
     await updateActualNotepadVisibility();
 }
@@ -539,9 +743,9 @@ async function herstelStandaardInstellingen() {
 async function herstelFavorieteInstellingen() {
     const { favorieteInstellingen } = await chrome.storage.local.get('favorieteInstellingen');
     if (favorieteInstellingen) {
-        const settingsToApply = { ...standaardInstellingen, ...favorieteInstellingen, notepadContent: notepadArea ? notepadArea.value : '' };
+        // We restore visual settings, but keep existing notes
+        const settingsToApply = { ...standaardInstellingen, ...favorieteInstellingen, notes, activeNoteId };
         const settingsToSave = { ...settingsToApply };
-        delete settingsToSave.notepadContent;
         await chrome.storage.local.set(settingsToSave);
         await laadInstellingen();
         await updateActualNotepadVisibility();
@@ -702,6 +906,22 @@ function setupEventListeners() {
             await chrome.storage.local.set({ addAtTop: addAtTop });
         });
     }
+    if (addNoteBtn) {
+        addNoteBtn.addEventListener('click', addNote);
+    }
+    if (quickAlignBtn) {
+        quickAlignBtn.addEventListener('click', async () => {
+            const { notepadTextAlign } = await chrome.storage.local.get({ notepadTextAlign: standaardInstellingen.notepadTextAlign });
+            const modes = ['left', 'center', 'right'];
+            const nextIdx = (modes.indexOf(notepadTextAlign) + 1) % modes.length;
+            const nextMode = modes[nextIdx];
+            
+            if (notepadArea) notepadArea.style.textAlign = nextMode;
+            if (notepadTextAlignSelect) notepadTextAlignSelect.value = nextMode;
+            updateQuickAlignButtonIcon(nextMode);
+            await chrome.storage.local.set({ notepadTextAlign: nextMode });
+        });
+    }
     startScreensaverKnop.addEventListener('click', toggleScreensaver);
     if (downloadNotepadKnop) {
         downloadNotepadKnop.addEventListener('click', async () => {
@@ -777,7 +997,6 @@ function setupEventListeners() {
 
     achtergrondElementenKleurInput.addEventListener('input', async (e) => {
         const val = e.target.value;
-        if (instellingenPaneel) instellingenPaneel.style.backgroundColor = val;
         if (notepadArea) notepadArea.style.backgroundColor = val;
         await chrome.storage.local.set({ achtergrondElementenKleur: val });
     });
@@ -793,11 +1012,25 @@ function setupEventListeners() {
     // System theme change listener
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFlatpickrTheme);
 
-    // Listen for storage changes (e.g. from context menu)
+    // Listen for storage changes
     chrome.storage.onChanged.addListener((changes, area) => {
-        if (area === 'local' && changes.notepadContent) {
-            if (notepadArea && notepadArea.value !== changes.notepadContent.newValue) {
-                notepadArea.value = changes.notepadContent.newValue || '';
+        if (area === 'local') {
+            if (changes.notes) {
+                notes = changes.notes.newValue || [];
+                const activeNote = notes.find(n => n.id === activeNoteId);
+                if (notepadArea && activeNote && notepadArea.value !== activeNote.content) {
+                    notepadArea.value = activeNote.content;
+                }
+                renderTabs();
+                updateStorageUsage();
+            }
+            if (changes.activeNoteId) {
+                activeNoteId = changes.activeNoteId.newValue;
+                const activeNote = notes.find(n => n.id === activeNoteId);
+                if (notepadArea && activeNote) {
+                    notepadArea.value = activeNote.content;
+                }
+                renderTabs();
             }
         }
     });
