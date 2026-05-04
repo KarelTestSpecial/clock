@@ -26,20 +26,20 @@ const standaardInstellingen = {
     toonSeconden: false,
     toonBatterij: true,
     showDayOfWeek: true,
-    showYear: true,
+    showYear: false,
     kleurNotepad: '#FFFFFF',
     fontTijd: 'Verdana, sans-serif',
-    grootteTijd: 4.0,
+    grootteTijd: 3.2,
     paddingOnderTijd: 0,
-    paddingBovenTijd: 0,
+    paddingBovenTijd: -3,
     kleurTijd: '#39FF14',
     fontDatum: 'Arial, sans-serif',
     grootteDatum: 1.2,
     paddingOnderDatum: 0,
     kleurDatum: '#B0B0B0',
     fontBatterij: 'Arial, sans-serif',
-    grootteBatterij: 1.2,
-    breedteBatterij: 1.0,
+    grootteBatterij: 1.8,
+    breedteBatterij: 1.6,
     paddingOnderBatterij: 0,
     kleurBatterij: '#B0B0B0',
     achtergrondElementenKleur: '#282828',
@@ -50,7 +50,7 @@ const standaardInstellingen = {
         { id: 'default', title: 'Note 1', content: '' }
     ],
     activeNoteId: 'default',
-    isNotepadVisible: true,
+    isNotepadVisible: false,
     isContextMenuEnabled: true,
     addAtTop: true,
     notepadTextAlign: 'center',
@@ -272,7 +272,7 @@ function applyAllSettings(settings) {
         tijdElement.style.color = settings.kleurTijd;
         tijdElement.style.fontSize = settings.grootteTijd + 'em';
         tijdElement.style.paddingBottom = settings.paddingOnderTijd + 'px';
-        tijdElement.style.paddingTop = settings.paddingBovenTijd + 'px';
+        tijdElement.style.marginTop = settings.paddingBovenTijd + 'px';
     }
     if (datumElement) {
         datumElement.style.fontFamily = settings.fontDatum;
@@ -973,7 +973,7 @@ function setupEventListeners() {
     fontTijdInput.addEventListener('input', (e) => applyAndSaveSetting('fontTijd', e.target.value, tijdElement, 'fontFamily'));
     grootteTijdInput.addEventListener('input', (e) => applyAndSaveSetting('grootteTijd', parseFloat(e.target.value), tijdElement, 'fontSize'));
     paddingOnderTijdInput.addEventListener('input', (e) => applyAndSaveSetting('paddingOnderTijd', parseInt(e.target.value), tijdElement, 'paddingBottom'));
-    paddingBovenTijdInput.addEventListener('input', (e) => applyAndSaveSetting('paddingBovenTijd', parseInt(e.target.value), tijdElement, 'paddingTop'));
+    paddingBovenTijdInput.addEventListener('input', (e) => applyAndSaveSetting('paddingBovenTijd', parseInt(e.target.value), tijdElement, 'marginTop'));
     fontDatumInput.addEventListener('input', (e) => applyAndSaveSetting('fontDatum', e.target.value, datumElement, 'fontFamily'));
     grootteDatumInput.addEventListener('input', (e) => applyAndSaveSetting('grootteDatum', parseFloat(e.target.value), datumElement, 'fontSize'));
     paddingOnderDatumInput.addEventListener('input', (e) => applyAndSaveSetting('paddingOnderDatum', parseInt(e.target.value), datumElement, 'paddingBottom'));
