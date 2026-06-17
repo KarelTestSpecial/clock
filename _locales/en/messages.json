@@ -3,7 +3,7 @@
         "message": "Very Practical Clock & Notepad"
     },
     "extDescription": {
-        "message": "A customizable digital clock that always stays on top ...or not."
+        "message": "A clean, customizable on-top clock with a multi-tab notepad — great for notes, reminders and drafting AI chat prompts."
     },
     "htmlPageTitle": {
         "message": "Clock Tab"
@@ -195,7 +195,7 @@
         "message": "Update complete"
     },
     "notificationUpdateMessage": {
-        "message": "The context menu research feature and the 'Save Notepad' option are now available! Check Settings"
+        "message": "Notepad keyboard shortcuts (Alt+E/Alt+R) and context menu research features are now available! Check Settings."
     },
     "lblContextMenuGroup": {
         "message": "Context Menu Option"
@@ -220,5 +220,26 @@
     },
     "errorStorageFull": {
         "message": "Storage limit reached!"
+    },
+    "helpButtonTooltip": {
+        "message": "Notepad Manual / Keyboard Shortcuts"
+    },
+    "helpModalTitle": {
+        "message": "Keyboard Shortcuts & Notepad Tips"
+    },
+    "helpDescAltE": {
+        "message": "Previous note tab"
+    },
+    "helpDescAltR": {
+        "message": "Next note tab"
+    },
+    "helpDescAlt19": {
+        "message": "Switch directly to tab 1-9"
+    },
+    "helpDescArrows": {
+        "message": "Previous / Next tab (alternative)"
+    },
+    "helpTipText": {
+        "message": "Tip: These shortcuts work instantly while typing inside the notepad. No need to touch your mouse!"
     }
 }

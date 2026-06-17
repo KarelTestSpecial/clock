@@ -3,7 +3,7 @@
         "message": "Zeer Praktische Klok & Notitieboekje"
     },
     "extDescription": {
-        "message": "Een aanpasbare digitale klok die altijd bovenaan blijft ...of niet."
+        "message": "Nette, aanpasbare klok-bovenaan met multi-tab notitieblok — ideaal voor notities, herinneringen en het opstellen van AI-prompts."
     },
     "htmlPageTitle": {
         "message": "Klok Tab"
@@ -195,7 +195,7 @@
         "message": "Update compleet"
     },
     "notificationUpdateMessage": {
-        "message": "De contextmenu research-functie en de 'Kladblok Opslaan'-optie zijn nu beschikbaar! Bekijk Instellingen"
+        "message": "Kladblok-sneltoetsen (Alt+E/Alt+R) en de contextmenu research-opties zijn nu beschikbaar! Bekijk de instellingen."
     },
     "lblContextMenuGroup": {
         "message": "Contextmenuoptie"
@@ -220,5 +220,26 @@
     },
     "errorStorageFull": {
         "message": "Opslaglimiet bereikt!"
+    },
+    "helpButtonTooltip": {
+        "message": "Kladblok Handleiding / Sneltoetsen"
+    },
+    "helpModalTitle": {
+        "message": "Sneltoetsen & Kladblok Tips"
+    },
+    "helpDescAltE": {
+        "message": "Vorige notitie-tab"
+    },
+    "helpDescAltR": {
+        "message": "Volgende notitie-tab"
+    },
+    "helpDescAlt19": {
+        "message": "Direct naar tab 1 t/m 9"
+    },
+    "helpDescArrows": {
+        "message": "Vorige / Volgende tab (alternatief)"
+    },
+    "helpTipText": {
+        "message": "Tip: Deze sneltoetsen werken direct terwijl je typt in het kladblok. Je hoeft je muis dus niet te gebruiken!"
     }
 }

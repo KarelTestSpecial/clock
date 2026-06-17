@@ -8,7 +8,7 @@ let fontBatterijInput, kleurBatterijInput, grootteBatterijInput, weergaveGrootte
 let achtergrondKleurInput, achtergrondElementenKleurInput, klokContainer, notepadContainer, notepadArea, toggleNotepadKnop, iconColorPicker, kleurNotepadInput;
 let notepadTextAlignSelect, fontNotepadInput, grootteNotepadInput, weergaveGrootteNotepad, quickAlignBtn;
 let toggleDatumKnop, startScreensaverKnop, statusMessageElement, klokPositieSelect;
-let tabsList, addNoteBtn, storageText, storageBarFill;
+let tabsList, addNoteBtn, storageText, storageBarFill, helpBtn, helpModal, closeModalBtn;
 
 // Globale status- en timer-variabelen
 let toonSeconden, toonBatterij, showDayOfWeek, showYear, currentLocale, isContextMenuEnabled, addAtTop;
@@ -134,6 +134,9 @@ function initializeDOMReferences() {
     storageText = document.getElementById('storage-text');
     storageBarFill = document.getElementById('storage-bar-fill');
     quickAlignBtn = document.getElementById('quick-align-btn');
+    helpBtn = document.getElementById('help-btn');
+    helpModal = document.getElementById('help-modal');
+    closeModalBtn = document.querySelector('.close-modal');
 
     // Alarmen
     for (let i = 1; i <= 2; i++) {
@@ -228,6 +231,38 @@ function applyTranslations() {
     herstelFavorietKnop.textContent = chrome.i18n.getMessage('restoreFavoritesText');
     if (downloadNotepadKnop) downloadNotepadKnop.textContent = chrome.i18n.getMessage('downloadNotepadText');
     if (notepadArea) notepadArea.placeholder = chrome.i18n.getMessage('notepadPlaceholder');
+
+    // Help Button & Modal i18n
+    if (helpBtn) helpBtn.title = chrome.i18n.getMessage('helpButtonTooltip');
+    if (document.getElementById('helpModalTitle')) {
+        document.getElementById('helpModalTitle').textContent = chrome.i18n.getMessage('helpModalTitle');
+    }
+    const helpModalBody = document.getElementById('helpModalBody');
+    if (helpModalBody) {
+        helpModalBody.innerHTML = `
+            <div class="shortcut-list">
+                <div class="shortcut-item">
+                    <span class="shortcut-key">Alt + E</span>
+                    <span class="shortcut-desc">${chrome.i18n.getMessage('helpDescAltE')}</span>
+                </div>
+                <div class="shortcut-item">
+                    <span class="shortcut-key">Alt + R</span>
+                    <span class="shortcut-desc">${chrome.i18n.getMessage('helpDescAltR')}</span>
+                </div>
+                <div class="shortcut-item">
+                    <span class="shortcut-key">Alt + 1..9</span>
+                    <span class="shortcut-desc">${chrome.i18n.getMessage('helpDescAlt19')}</span>
+                </div>
+                <div class="shortcut-item">
+                    <span class="shortcut-key">Alt + ← / →</span>
+                    <span class="shortcut-desc">${chrome.i18n.getMessage('helpDescArrows')}</span>
+                </div>
+            </div>
+            <div class="help-tip">
+                ${chrome.i18n.getMessage('helpTipText')}
+            </div>
+        `;
+    }
 }
 
 function setKlokLayout(positie) {
@@ -965,6 +1000,24 @@ function setupEventListeners() {
         stopAlarmKnop.classList.add('hidden');
         document.body.classList.remove('alarm-active');
     });
+
+    // Help Button & Modal Event Listeners
+    if (helpBtn && helpModal) {
+        helpBtn.addEventListener('click', () => {
+            helpModal.classList.add('visible');
+        });
+    }
+    if (closeModalBtn && helpModal) {
+        closeModalBtn.addEventListener('click', () => {
+            helpModal.classList.remove('visible');
+        });
+    }
+    window.addEventListener('click', (e) => {
+        if (e.target === helpModal) {
+            helpModal.classList.remove('visible');
+        }
+    });
+
     tijdElement.addEventListener('click', toggleScreensaver);
     datumElement.addEventListener('click', toggleScreensaver);
 
@@ -984,6 +1037,59 @@ function setupEventListeners() {
 
     if (notepadArea) {
         notepadArea.addEventListener('input', saveNotepadContent);
+
+        // Sneltoetsen om tussen notitie-tabs te wisselen wanneer gefocust
+        notepadArea.addEventListener('keydown', async (e) => {
+            if (!notes || notes.length <= 1) return;
+
+            const currentIndex = notes.findIndex(n => n.id === activeNoteId);
+            if (currentIndex === -1) return;
+
+            let nextIndex = -1;
+
+            // Alt + E (vorige) en Alt + R (volgende) - Karel's voorkeur
+            if (e.altKey && (e.key === 'e' || e.key === 'E' || e.key === 'r' || e.key === 'R')) {
+                e.preventDefault();
+                if (e.key.toLowerCase() === 'e') {
+                    nextIndex = (currentIndex - 1 + notes.length) % notes.length;
+                } else {
+                    nextIndex = (currentIndex + 1) % notes.length;
+                }
+            }
+            // Alt + ArrowLeft (vorige) en Alt + ArrowRight (volgende)
+            else if (e.altKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+                e.preventDefault();
+                if (e.key === 'ArrowLeft') {
+                    nextIndex = (currentIndex - 1 + notes.length) % notes.length;
+                } else {
+                    nextIndex = (currentIndex + 1) % notes.length;
+                }
+            }
+            // Ctrl + [ (vorige) en Ctrl + ] (volgende)
+            else if (e.ctrlKey && (e.key === '[' || e.key === ']')) {
+                e.preventDefault();
+                if (e.key === '[') {
+                    nextIndex = (currentIndex - 1 + notes.length) % notes.length;
+                } else {
+                    nextIndex = (currentIndex + 1) % notes.length;
+                }
+            }
+            // Alt + 1 t/m 9 (direct naar specifieke tab springen)
+            else if (e.altKey && e.key >= '1' && e.key <= '9') {
+                const targetIndex = parseInt(e.key) - 1;
+                if (targetIndex < notes.length) {
+                    e.preventDefault();
+                    nextIndex = targetIndex;
+                }
+            }
+
+            // Voer de wissel uit en behoud de focus en cursorpositie in de textarea
+            if (nextIndex !== -1) {
+                await switchNote(notes[nextIndex].id);
+                notepadArea.focus();
+                notepadArea.setSelectionRange(notepadArea.value.length, notepadArea.value.length);
+            }
+        });
     }
     if (notepadTextAlignSelect) notepadTextAlignSelect.addEventListener('input', (e) => applyAndSaveSetting('notepadTextAlign', e.target.value, notepadArea, 'textAlign'));
     if (fontNotepadInput) fontNotepadInput.addEventListener('input', (e) => applyAndSaveSetting('fontNotepad', e.target.value, notepadArea, 'fontFamily'));

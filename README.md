@@ -6,12 +6,19 @@ A simple, clean, and highly customizable clock that opens in a minimal window. D
 
 Click the clock icon in your browser's toolbar to open the clock window. Clicking the icon again will close it.
 
+### Keyboard Shortcuts (Notepad)
+When typing inside the notepad, you can quickly navigate between note tabs without using the mouse:
+- **Alt + E**: Switch to the previous note tab (left).
+- **Alt + R**: Switch to the next note tab (right).
+- **Alt + 1** to **Alt + 9**: Switch directly to a specific note tab (1st to 9th).
+- **Alt + Arrow Left / Arrow Right** (or **Ctrl + [ / ]**): Alternative navigation keys.
+
 ## Features
 
 - **Clear Digital Clock:** A large, easy-to-read digital clock is the centerpiece of the extension.
 - **Date and Battery Status:** Displays the current date and your device's remaining battery percentage.
 - **Dual Alarms:** Set up to two persistent alarms with customizable sounds and durations, featuring a modern time picker interface for easy scheduling. The clock window will automatically open and play a sound when an alarm goes off.
-- **Built-in Notepad:** A convenient notepad for jotting down quick notes and reminders. You can export your notes to a .txt file anytime.
+- **Built-in Notepad:** A convenient notepad for jotting down quick notes and reminders. Create multiple notes, switch between them instantly while typing using keyboard shortcuts (**Alt+E** for previous, **Alt+R** for next), and export your notes to a `.txt` file anytime.
 - **Context Menu Research:** Easily save selected text or the current page URL directly to your notepad via the browser's right-click context menu. Choose whether to add new entries to the top or bottom of your notes.
 - **Screensaver Mode:** An elegant screensaver mode that gently moves the clock around the screen to prevent burn-in.
 
