@@ -44,7 +44,7 @@ const standaardInstellingen = {
     kleurBatterij: '#B0B0B0',
     achtergrondElementenKleur: '#282828',
     achtergrondKleur: '#000000',
-    klokPositie: 'top-center',
+    klokPositie: 'top-left',
     isDatumVisible: true,
     notes: [
         { id: 'default', title: 'Note 1', content: '' }
