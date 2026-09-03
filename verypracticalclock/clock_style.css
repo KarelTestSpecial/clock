@@ -78,20 +78,48 @@ body.position-bottom-right {
 
 body.notepad-open #klok-container {
     height: 100vh;
-    /* Force full height when notepad is open */
     width: 100%;
-    /* Force full width when notepad is open */
 }
 
-/* Ensure body doesn't fight the height when notepad is open */
-/* Ensure body doesn't fight the height when notepad is open */
 body.notepad-open {
     display: block;
-    /* Disable Grid layout to allow full width expansion */
     place-content: unset;
-    /* Remove grid alignment */
     overflow: hidden;
-    /* Prevent double scrollbars if possible */
+}
+
+body.notepad-open.position-top-left #klok-container {
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+body.notepad-open.position-top-center #klok-container {
+    align-items: center;
+    justify-content: flex-start;
+}
+
+body.notepad-open.position-top-right #klok-container {
+    align-items: flex-end;
+    justify-content: flex-start;
+}
+
+body.notepad-open.position-center-center #klok-container {
+    align-items: center;
+    justify-content: center;
+}
+
+body.notepad-open.position-bottom-left #klok-container {
+    align-items: flex-start;
+    justify-content: flex-end;
+}
+
+body.notepad-open.position-bottom-center #klok-container {
+    align-items: center;
+    justify-content: flex-end;
+}
+
+body.notepad-open.position-bottom-right #klok-container {
+    align-items: flex-end;
+    justify-content: flex-end;
 }
 
 #tijd,
@@ -100,6 +128,20 @@ body.notepad-open {
     white-space: nowrap;
     line-height: 1;
     text-align: inherit;
+}
+
+#batterij-status {
+    transform-origin: center;
+}
+
+body.position-top-left #batterij-status,
+body.position-bottom-left #batterij-status {
+    transform-origin: left;
+}
+
+body.position-top-right #batterij-status,
+body.position-bottom-right #batterij-status {
+    transform-origin: right;
 }
 
 #tijd {

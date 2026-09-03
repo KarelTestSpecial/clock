@@ -266,7 +266,11 @@ function applyTranslations() {
 }
 
 function setKlokLayout(positie) {
-    document.body.className = ''; // Clear all classes
+    const notepadOpen = document.body.classList.contains('notepad-open');
+    document.body.className = '';
+    if (notepadOpen) {
+        document.body.classList.add('notepad-open');
+    }
     if (positie) {
         document.body.classList.add(`position-${positie}`);
     } else {
