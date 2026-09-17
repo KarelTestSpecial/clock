@@ -4,7 +4,6 @@ body {
     width: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden;
 }
 
 body {
@@ -76,6 +75,28 @@ body.position-bottom-right {
     /* Default: Height is auto (content-based) to respect vertical centering */
 }
 
+/* Position-based alignment for klok-container (independent of notepad state) */
+body.position-top-left #klok-container,
+body.position-bottom-left #klok-container {
+    align-items: flex-start;
+}
+
+body.position-top-right #klok-container,
+body.position-bottom-right #klok-container {
+    align-items: flex-end;
+}
+
+/* Position-based alignment for knoppen-wrapper */
+body.position-top-left #knoppen-wrapper,
+body.position-bottom-left #knoppen-wrapper {
+    justify-content: flex-start;
+}
+
+body.position-top-right #knoppen-wrapper,
+body.position-bottom-right #knoppen-wrapper {
+    justify-content: flex-end;
+}
+
 body.notepad-open #klok-container {
     height: 100vh;
     width: 100%;
@@ -84,7 +105,7 @@ body.notepad-open #klok-container {
 body.notepad-open {
     display: block;
     place-content: unset;
-    overflow: hidden;
+    overflow: auto;
 }
 
 body.notepad-open.position-top-left #klok-container {
