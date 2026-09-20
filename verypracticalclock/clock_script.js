@@ -310,7 +310,10 @@ function applyAllSettings(settings) {
         tijdElement.style.fontFamily = settings.fontTijd;
         tijdElement.style.color = settings.kleurTijd;
         tijdElement.style.fontSize = settings.grootteTijd + 'em';
-        tijdElement.style.paddingBottom = settings.paddingOnderTijd + 'px';
+        // Space below the digits is a margin (not padding) so that negative
+        // values are possible: this allows closing the gap to the date.
+        tijdElement.style.paddingBottom = '';
+        tijdElement.style.marginBottom = settings.paddingOnderTijd + 'px';
         tijdElement.style.marginTop = settings.paddingBovenTijd + 'px';
     }
     if (datumElement) {
@@ -851,8 +854,7 @@ function stopScreensaver() {
     chrome.storage.local.get('klokPositie', ({ klokPositie = standaardInstellingen.klokPositie }) => setKlokLayout(klokPositie));
 }
 
-async function toggleScreensaver(event) {
-    if (event) event.stopPropagation();
+async function toggleScreensaver() {
     isScreensaverActive = !isScreensaverActive;
     const currentWindow = await chrome.windows.getCurrent();
     document.body.classList.toggle('screensaver-active', isScreensaverActive);
@@ -876,8 +878,10 @@ async function toggleScreensaver(event) {
     }
 }
 
-async function handleScreensaverBackgroundClick(event) {
-    if (isScreensaverActive && event.target !== tijdElement && event.target !== datumElement) {
+async function handleScreensaverBackgroundClick() {
+    // While the screensaver runs, a click anywhere (including on the moving
+    // clock display itself) ends it. Clicking the display never starts it.
+    if (isScreensaverActive) {
         await toggleScreensaver();
     }
 }
@@ -1022,14 +1026,14 @@ function setupEventListeners() {
         }
     });
 
-    tijdElement.addEventListener('click', toggleScreensaver);
-    datumElement.addEventListener('click', toggleScreensaver);
+    // Note: clicking the clock display (time/date) intentionally does NOT
+    // start the screensaver anymore. Use the "Screensaver" button instead.
 
     klokPositieSelect.addEventListener('input', (e) => applyAndSaveSetting('klokPositie', e.target.value));
 
     fontTijdInput.addEventListener('input', (e) => applyAndSaveSetting('fontTijd', e.target.value, tijdElement, 'fontFamily'));
     grootteTijdInput.addEventListener('input', (e) => applyAndSaveSetting('grootteTijd', parseFloat(e.target.value), tijdElement, 'fontSize'));
-    paddingOnderTijdInput.addEventListener('input', (e) => applyAndSaveSetting('paddingOnderTijd', parseInt(e.target.value), tijdElement, 'paddingBottom'));
+    paddingOnderTijdInput.addEventListener('input', (e) => applyAndSaveSetting('paddingOnderTijd', parseInt(e.target.value), tijdElement, 'marginBottom'));
     paddingBovenTijdInput.addEventListener('input', (e) => applyAndSaveSetting('paddingBovenTijd', parseInt(e.target.value), tijdElement, 'marginTop'));
     fontDatumInput.addEventListener('input', (e) => applyAndSaveSetting('fontDatum', e.target.value, datumElement, 'fontFamily'));
     grootteDatumInput.addEventListener('input', (e) => applyAndSaveSetting('grootteDatum', parseFloat(e.target.value), datumElement, 'fontSize'));

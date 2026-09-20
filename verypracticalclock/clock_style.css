@@ -295,10 +295,15 @@ body.position-bottom-right #batterij-status {
 }
 
 #knoppen-wrapper {
-    display: flex;
+    display: grid;
+    /* The three action buttons always get exactly the same width */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
     justify-content: center;
     gap: 10px;
     width: 100%;
+    /* Prevent the buttons from stretching across very wide windows */
+    max-width: 420px;
     margin-top: auto;
     padding-top: 8px;
     padding-bottom: 5px;
@@ -306,6 +311,30 @@ body.position-bottom-right #batterij-status {
     visibility: hidden;
     transition: opacity 0.3s ease-in-out;
     pointer-events: none;
+}
+
+/* All three action buttons (notepad, settings, screensaver) share identical
+   dimensions: same width, same height. Labels wrap onto a second line when
+   they do not fit, so no text is ever clipped. */
+#knoppen-wrapper button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-width: 0;
+    min-height: 26px;
+    height: 100%;
+    padding: 5px 6px;
+    font-size: 0.85em;
+    line-height: 1.2;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
+/* The STOP button is only visible while an alarm sounds; let it use the full row */
+#knoppen-wrapper #stop-alarm {
+    grid-column: 1 / -1;
 }
 
 #klok-container:hover #knoppen-wrapper {
