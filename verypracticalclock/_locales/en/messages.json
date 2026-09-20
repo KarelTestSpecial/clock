@@ -21,7 +21,7 @@
         "message": "Toggle Year"
     },
     "toggleNotepadText": {
-        "message": "Toggle Notepad"
+        "message": "Notepad"
     },
     "toggleSettingsText": {
         "message": "Settings"
@@ -179,17 +179,11 @@
     "contextMenuOffText": {
         "message": "OFF"
     },
-    "lblContextMenu": {
-        "message": "Context Menu Option"
-    },
     "notepadPositionTopText": {
         "message": "TOP"
     },
     "notepadPositionBottomText": {
         "message": "BOTTOM"
-    },
-    "lblNotepadAddPosition": {
-        "message": "Add to Notepad"
     },
     "notificationUpdateTitle": {
         "message": "Update complete"

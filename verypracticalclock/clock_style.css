@@ -440,16 +440,13 @@ button:hover {
     width: 100%;
 }
 
-.setting-row span {
-    font-size: 0.9em;
-    color: #ccc;
-    flex: 1;
-}
-
+/* The field labels of the context menu section were removed: the toggle
+   buttons now fill the row, so both are equally wide and the current
+   state (AAN/UIT, BOVENAAN/ONDERAAN) reads as one clear column. */
 .setting-row button {
-    flex: 0 0 auto;
+    flex: 1 1 auto;
     min-width: 80px;
-    padding: 3px 8px;
+    padding: 4px 8px;
 }
 
 .instellingen-paneel input.flatpickr-input {

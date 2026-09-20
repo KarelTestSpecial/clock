@@ -180,9 +180,9 @@ function applyTranslations() {
     if (toggleJaarKnop) toggleJaarKnop.textContent = chrome.i18n.getMessage('toggleYearText');
     toggleNotepadKnop.textContent = chrome.i18n.getMessage('toggleNotepadText');
     updateToggleButtonTexts();
+    // De veldlabels van de contextmenusectie zijn verwijderd: de sectiekop
+    // ("Context menu optie") benoemt de groep, de knoppen tonen de status.
     if (document.getElementById('lblContextMenuGroup')) document.getElementById('lblContextMenuGroup').textContent = chrome.i18n.getMessage('lblContextMenuGroup');
-    if (document.getElementById('lblContextMenu')) document.getElementById('lblContextMenu').textContent = chrome.i18n.getMessage('lblContextMenu');
-    if (document.getElementById('lblNotepadAddPosition')) document.getElementById('lblNotepadAddPosition').textContent = chrome.i18n.getMessage('lblNotepadAddPosition');
     toonInstellingenKnop.textContent = chrome.i18n.getMessage('toggleSettingsText');
     startScreensaverKnop.textContent = chrome.i18n.getMessage('startScreensaverText');
     stopAlarmKnop.textContent = chrome.i18n.getMessage('stopAlarmText');

@@ -21,7 +21,7 @@
         "message": "Jaar Aan/Uit"
     },
     "toggleNotepadText": {
-        "message": "Kladblok Aan/Uit"
+        "message": "Kladblok"
     },
     "toggleSettingsText": {
         "message": "Instellingen"
@@ -179,17 +179,11 @@
     "contextMenuOffText": {
         "message": "UIT"
     },
-    "lblContextMenu": {
-        "message": "Contextmenuoptie"
-    },
     "notepadPositionTopText": {
         "message": "BOVENAAN"
     },
     "notepadPositionBottomText": {
         "message": "ONDERAAN"
-    },
-    "lblNotepadAddPosition": {
-        "message": "Toevoegen"
     },
     "notificationUpdateTitle": {
         "message": "Update compleet"
@@ -198,7 +192,7 @@
         "message": "Kladblok-sneltoetsen (Alt+E/Alt+R) en de contextmenu research-opties zijn nu beschikbaar! Bekijk de instellingen."
     },
     "lblContextMenuGroup": {
-        "message": "Contextmenuoptie"
+        "message": "Context menu optie"
     },
     "storageUsedLabel": {
         "message": "Opslag verbruikt"

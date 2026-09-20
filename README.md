@@ -19,7 +19,7 @@ When typing inside the notepad, you can quickly navigate between note tabs witho
 - **Date and Battery Status:** Displays the current date and your device's remaining battery percentage.
 - **Dual Alarms:** Set up to two persistent alarms with customizable sounds and durations, featuring a modern time picker interface for easy scheduling. The clock window will automatically open and play a sound when an alarm goes off.
 - **Built-in Notepad:** A convenient notepad for jotting down quick notes and reminders. Create multiple notes, switch between them instantly while typing using keyboard shortcuts (**Alt+E** for previous, **Alt+R** for next), and export your notes to a `.txt` file anytime.
-- **Context Menu Research:** Easily save selected text or the current page URL directly to your notepad via the browser's right-click context menu. Choose whether to add new entries to the top or bottom of your notes.
+- **Context Menu Research:** Easily save selected text or the current page URL directly to your notepad via the browser's right-click context menu. Choose whether to add new entries to the top or bottom of your notes. In **Settings** these two options live under the heading **Context Menu Option**, and each button shows its current state right away (on/off, top/bottom).
 - **Screensaver Mode:** An elegant screensaver mode that gently moves the clock around the screen to prevent burn-in. Start it with the **Screensaver** button; a single click anywhere (including on the clock itself) ends it again.
 - **Three Matching Buttons:** The **notepad**, **settings** and **screensaver** buttons always share exactly the same width and height, in every window size and language, and they stay neatly inside the clock window.
 
@@ -32,8 +32,8 @@ We believe your clock should look exactly the way you want it. Use the settings 
     - Show or hide the date.
     - Show or hide the day of the week.
     - Show or hide the battery percentage.
-    - Show or hide the notepad.
-    - Enable or disable the context menu research feature.
+    - Show or hide the notepad (the **Notepad** button).
+    - Enable or disable the context menu research feature, and choose whether new entries go on top or at the bottom.
 
 - **Fonts and Sizes:**
     - Independently choose the font and size for the **Time**, **Date**, **Battery**, and **Notepad** text.
@@ -47,7 +47,6 @@ We believe your clock should look exactly the way you want it. Use the settings 
     - Position the entire clock widget in one of seven locations on the screen (e.g., top-left, center, bottom-right).
     - Fine-tune the spacing **above and below** the time to get the vertical gap just right. The slider below the time also goes **negative**, so the date can be moved all the way up until it touches the clock digits.
     - Adjust the text alignment within the notepad (left, center, or right).
-    - Choose whether context menu additions are placed at the **Top or Bottom** of the notepad.
 
 - **Save Your Favorites:**
     - Found a look you love? Save your current settings as a "Favorite" and restore them anytime with a single click. You can also easily revert to the default settings.
