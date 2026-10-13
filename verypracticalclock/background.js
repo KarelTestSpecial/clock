@@ -64,17 +64,31 @@ async function drawTimeIcon() {
     chrome.action.setIcon({ imageData: imageData });
 }
 
-// Update icon every minute using alarms for reliability
+// --- Dynamic Tooltip (digital time on hover) ---
+function updateTooltipTime() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString(chrome.i18n.getUILanguage(), {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    chrome.action.setTitle({ title: timeString });
+}
+
+// Update icon + tooltip every minute using alarms for reliability
 chrome.alarms.create('update-icon', { periodInMinutes: 1 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name === 'update-icon') {
         drawTimeIcon();
+        updateTooltipTime();
     }
 });
 
 // Initial draw
-setTimeout(drawTimeIcon, 100);
+setTimeout(() => {
+    drawTimeIcon();
+    updateTooltipTime();
+}, 100);
 
 // --- Context Menus ---
 async function updateContextMenus() {
