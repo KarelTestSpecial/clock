@@ -8,6 +8,7 @@ let fontBatterijInput, kleurBatterijInput, grootteBatterijInput, weergaveGrootte
 let achtergrondKleurInput, achtergrondElementenKleurInput, klokContainer, notepadContainer, notepadArea, toggleNotepadKnop, iconColorPicker, kleurNotepadInput;
 let notepadTextAlignSelect, fontNotepadInput, grootteNotepadInput, weergaveGrootteNotepad, quickAlignBtn;
 let toggleDatumKnop, startScreensaverKnop, statusMessageElement, klokPositieSelect;
+let snelIcoontjes;
 let tabsList, addNoteBtn, storageText, storageBarFill, helpBtn, helpModal, closeModalBtn;
 
 // Globale status- en timer-variabelen
@@ -72,6 +73,7 @@ const standaardInstellingen = {
 
 function initializeDOMReferences() {
     tijdElement = document.getElementById('tijd');
+    snelIcoontjes = document.getElementById('snel-icoontjes');
     datumElement = document.getElementById('datum');
     batterijStatusElement = document.getElementById('batterij-status');
     klokContainer = document.getElementById('klok-container');
@@ -178,13 +180,15 @@ function applyTranslations() {
     toggleDatumKnop.textContent = chrome.i18n.getMessage('toggleDateText');
     toggleDagNaamKnop.textContent = chrome.i18n.getMessage('toggleDayOfWeekText');
     if (toggleJaarKnop) toggleJaarKnop.textContent = chrome.i18n.getMessage('toggleYearText');
-    toggleNotepadKnop.textContent = chrome.i18n.getMessage('toggleNotepadText');
+    // De drie knoppen zijn icoontjes geworden (SVG in de HTML): de
+    // vertaling gaat daarom naar de tooltip in plaats van de tekst.
+    if (toggleNotepadKnop) toggleNotepadKnop.title = chrome.i18n.getMessage('toggleNotepadText');
     updateToggleButtonTexts();
     // De veldlabels van de contextmenusectie zijn verwijderd: de sectiekop
     // ("Context menu optie") benoemt de groep, de knoppen tonen de status.
     if (document.getElementById('lblContextMenuGroup')) document.getElementById('lblContextMenuGroup').textContent = chrome.i18n.getMessage('lblContextMenuGroup');
-    toonInstellingenKnop.textContent = chrome.i18n.getMessage('toggleSettingsText');
-    startScreensaverKnop.textContent = chrome.i18n.getMessage('startScreensaverText');
+    if (toonInstellingenKnop) toonInstellingenKnop.title = chrome.i18n.getMessage('toggleSettingsText');
+    if (startScreensaverKnop) startScreensaverKnop.title = chrome.i18n.getMessage('startScreensaverText');
     stopAlarmKnop.textContent = chrome.i18n.getMessage('stopAlarmText');
     document.getElementById('settingsTitleText').textContent = chrome.i18n.getMessage('settingsTitleText');
     document.getElementById('timeLabel').textContent = chrome.i18n.getMessage('timeLabel');
@@ -315,6 +319,11 @@ function applyAllSettings(settings) {
         tijdElement.style.paddingBottom = '';
         tijdElement.style.marginBottom = settings.paddingOnderTijd + 'px';
         tijdElement.style.marginTop = settings.paddingBovenTijd + 'px';
+    }
+    if (snelIcoontjes) {
+        // De icoontjes naast de cijfers staan in em: zo schalen ze mee
+        // met de klokgrootte zonder dat de cijfers zelf veranderen.
+        snelIcoontjes.style.fontSize = settings.grootteTijd + 'em';
     }
     if (datumElement) {
         datumElement.style.fontFamily = settings.fontDatum;
@@ -1027,12 +1036,27 @@ function setupEventListeners() {
     });
 
     // Note: clicking the clock display (time/date) intentionally does NOT
-    // start the screensaver anymore. Use the "Screensaver" button instead.
+    // start the screensaver anymore. Use the screensaver icon instead.
+
+    // Chromium toont bij volledig scherm steeds de melding "houd Esc ingedrukt
+    // om het volledige scherm te sluiten", maar een browser-venster in
+    // volledig scherm reageert daar niet op. Vang Esc daarom zelf op: zolang
+    // de screensaver draait, stopt een druk op Esc hem én herstelt het venster
+    // naar normaal, zodat de melding van Chrome klopt.
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape' || !isScreensaverActive) return;
+        e.preventDefault();
+        toggleScreensaver();
+    });
 
     klokPositieSelect.addEventListener('input', (e) => applyAndSaveSetting('klokPositie', e.target.value));
 
     fontTijdInput.addEventListener('input', (e) => applyAndSaveSetting('fontTijd', e.target.value, tijdElement, 'fontFamily'));
-    grootteTijdInput.addEventListener('input', (e) => applyAndSaveSetting('grootteTijd', parseFloat(e.target.value), tijdElement, 'fontSize'));
+    grootteTijdInput.addEventListener('input', (e) => {
+        const waarde = parseFloat(e.target.value);
+        applyAndSaveSetting('grootteTijd', waarde, tijdElement, 'fontSize');
+        if (snelIcoontjes) snelIcoontjes.style.fontSize = waarde + 'em';
+    });
     paddingOnderTijdInput.addEventListener('input', (e) => applyAndSaveSetting('paddingOnderTijd', parseInt(e.target.value), tijdElement, 'marginBottom'));
     paddingBovenTijdInput.addEventListener('input', (e) => applyAndSaveSetting('paddingBovenTijd', parseInt(e.target.value), tijdElement, 'marginTop'));
     fontDatumInput.addEventListener('input', (e) => applyAndSaveSetting('fontDatum', e.target.value, datumElement, 'fontFamily'));

@@ -20,8 +20,8 @@ When typing inside the notepad, you can quickly navigate between note tabs witho
 - **Dual Alarms:** Set up to two persistent alarms with customizable sounds and durations, featuring a modern time picker interface for easy scheduling. The clock window will automatically open and play a sound when an alarm goes off.
 - **Built-in Notepad:** A convenient notepad for jotting down quick notes and reminders. Create multiple notes, switch between them instantly while typing using keyboard shortcuts (**Alt+E** for previous, **Alt+R** for next), and export your notes to a `.txt` file anytime.
 - **Context Menu Research:** Easily save selected text or the current page URL directly to your notepad via the browser's right-click context menu. Choose whether to add new entries to the top or bottom of your notes. In **Settings** these two options live under the heading **Context Menu Option**, and each button shows its current state right away (on/off, top/bottom).
-- **Screensaver Mode:** An elegant screensaver mode that gently moves the clock around the screen to prevent burn-in. Start it with the **Screensaver** button; a single click anywhere (including on the clock itself) ends it again.
-- **Three Matching Buttons:** The **notepad**, **settings** and **screensaver** buttons always share exactly the same width and height, in every window size and language, and they stay neatly inside the clock window.
+- **Screensaver Mode:** An elegant screensaver mode that gently moves the clock around the screen to prevent burn-in. Start it with the screensaver icon next to the clock digits; a single click anywhere (including on the clock itself) or a press on **Esc** ends it again (Esc also restores the normal window, so Chrome's "press and hold Esc" hint is correct).
+- **Three Icons Next to the Digits:** The **notepad**, **settings** and **screensaver** actions live in three small icons that sit right beside the clock digits: on the right when the clock position is left- or centre-aligned, on the left when it is right-aligned. They fade in on hover, scale along with the clock size, and carry a tooltip with their name.
 
 ## Extensive Customization
 
@@ -32,7 +32,7 @@ We believe your clock should look exactly the way you want it. Use the settings 
     - Show or hide the date.
     - Show or hide the day of the week.
     - Show or hide the battery percentage.
-    - Show or hide the notepad (the **Notepad** button).
+    - Show or hide the notepad (the notepad icon next to the clock digits).
     - Enable or disable the context menu research feature, and choose whether new entries go on top or at the bottom.
 
 - **Fonts and Sizes:**

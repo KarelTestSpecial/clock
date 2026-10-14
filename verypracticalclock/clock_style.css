@@ -176,6 +176,87 @@ body.position-bottom-right #batterij-status {
     color: lightgray;
 }
 
+/* --- Snelkoppelingen naast de cijfers (kladblok, instellingen, screensaver) --- */
+#tijd-rij {
+    position: relative;
+}
+
+#snel-icoontjes {
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    margin-left: 0.1em;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: max(0.08em, 3px);
+    line-height: 0;
+    /* Het script zet deze grootte gelijk aan de instelling "Tijd Grootte",
+       zodat de icoontjes altijd mee schalen met de cijfers. */
+    font-size: 3.2em;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Uitlijning klok naar rechts: de icoontjes komen links van de cijfers.
+   Bij links- of middenuitlijning blijven ze rechts (standaard hierboven). */
+body.position-top-right #snel-icoontjes,
+body.position-bottom-right #snel-icoontjes {
+    left: auto;
+    right: 100%;
+    margin-left: 0;
+    margin-right: 0.1em;
+}
+
+#klok-container:hover #snel-icoontjes,
+#snel-icoontjes:focus-within {
+    opacity: 1;
+    pointer-events: all;
+}
+
+#snel-icoontjes button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.44em;
+    height: 0.44em;
+    /* Klikbaarheidsvloer wanneer de klok heel klein staat */
+    min-width: 12px;
+    min-height: 12px;
+    margin: 0;
+    padding: 0;
+    font-size: 1em;
+    line-height: 0;
+    color: rgba(255, 255, 255, 0.45);
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    transition: color 0.2s, background-color 0.2s, border-color 0.2s;
+}
+
+#snel-icoontjes button:hover {
+    color: #eee;
+    background-color: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+#snel-icoontjes button:focus-visible {
+    outline: 1px solid currentColor;
+    outline-offset: 1px;
+}
+
+#snel-icoontjes button svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
 #notepad-container {
     display: flex;
     flex-direction: column;
@@ -296,7 +377,8 @@ body.position-bottom-right #batterij-status {
 
 #knoppen-wrapper {
     display: grid;
-    /* The three action buttons always get exactly the same width */
+    /* De drie actieknoppen zijn icoontjes naast de cijfers geworden; deze
+       wrapper bewaart enkel de STOP-knop van een actief alarm. */
     grid-template-columns: repeat(3, minmax(0, 1fr));
     align-items: stretch;
     justify-content: center;
@@ -313,9 +395,7 @@ body.position-bottom-right #batterij-status {
     pointer-events: none;
 }
 
-/* All three action buttons (notepad, settings, screensaver) share identical
-   dimensions: same width, same height. Labels wrap onto a second line when
-   they do not fit, so no text is ever clipped. */
+/* De STOP-knop vult de volledige rij (de icoontknoppen staan nu elders). */
 #knoppen-wrapper button {
     display: flex;
     align-items: center;
@@ -338,6 +418,14 @@ body.position-bottom-right #batterij-status {
 }
 
 #klok-container:hover #knoppen-wrapper {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+}
+
+/* De STOP-knop moet meteen zichtbaar zijn zodra een alarm afgaat,
+   ook zonder dat de muis over de klok beweegt. */
+body.alarm-active #knoppen-wrapper {
     opacity: 1;
     visibility: visible;
     pointer-events: all;
@@ -569,6 +657,7 @@ body.screensaver-active {
 }
 
 .screensaver-active #knoppen-wrapper,
+.screensaver-active #snel-icoontjes,
 .screensaver-active .instellingen-paneel,
 .screensaver-active #notepad-container {
     display: none !important;
